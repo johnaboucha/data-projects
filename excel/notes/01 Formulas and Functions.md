@@ -159,3 +159,133 @@ Excel’s most common reference function is **VLOOKUP**. It’s good when you wa
 VLOOKUP iterates row by row. If a data set is transposed and you need to iterate by column, use the HLOOKUP function.
 
 If multiple values exist, Excel always returns the top or left most value when using the VLOOKUP function. Also, the lookup value must exist in the first column of the data. Otherwise, it doesn’t work!
+
+**INDEX** is another related function that returns the value of a specific cell within an array. Typically used as part of more complex formulas, not usually by itself.
+
+=INDEX(array, row_num, column_num)
+
+**MATCH** is yet another related function. It returns the position of a specific value within a column or row. Likewise, it’s often used as part of more complex formulas.
+
+=MATCH(lookup_value, lookup_array, [match_type])
+
+INDEX and MATCH can be used together to act like a lookup function but can find values in any row or column in an array.
+
+**XLOOKUP**, however, can retrieve values from a table or range by matching the lookup value. And it offers more flexibility than our previous lookup functions, returning arrays instead of single values.
+
+=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_model], [search_model])
+
+Next, the **CHOOSE** function selects a value, cell reference, or function to perform from a list, based on a given index number.
+
+=CHOOSE(index_num, value1, [value2], …)
+
+List values passed into the CHOOSE function can be a mix of numbers, cell references, defines names, formulas, or text.
+
+**OFFSET** is a function like INDEX but returns either the value of the cell within an array or a specific range of cells. Can be used to create dynamic arrays.
+
+=OFFSET(reference, rows, columns, [height], [width])
+
+## Text Functions
+
+First, here are a set of simple text functions.
+
+- TRIM, removes any leading or trailing spaces from text
+- LOWER, converts the string to lowercase
+- UPPER, converts the string to uppercase
+- PROPER, converts the string to proper case
+- CONCATENATE, combines values from multiple cells into one (can also use the **&** symbol)
+
+Next, we can return substrings by using one of the following functions.
+
+- LEFT, returns the number of characters from the left
+- RIGHT, returns number of characters from right
+- MID, returns specified number of characters from specified starting index
+- LEN, returns length of string
+
+Then there are two functions that can help when we need to treat cell values as something else.
+
+- TEXT, converts a numeric value to text while using a specific format
+- VALUE, converts a text string that represents a number into a numeric value
+
+The **SEARCH** function returns the position number of the substring in a string. Returns a #VALUE! error if not found.
+
+=SEARCH(find_text, within_text, [start_num])
+
+The **FIND** function works the same as SEARCH but it’s case-sensitive.
+
+Lastly, the **SUBSTITUTE** function lets you replace a substring with another string. Can be useful for when you want to create  single, unique identifier when trying to extract data from a string.
+
+## Date and Time Functions
+
+Every date in Excel has an associated date value, a number or decimal number representing the number of days since 1/1/1900.
+
+Excel recognizes most types of dates but you can also use DATEVALUE and TIMEVALUE to convert unformatted dates too.
+
+To format dates, right-click on the cell > Format Cells and select the Date type or create your own custom format.
+
+When dragging a date cell, the auto-fill series will increment the values one day per cell, but you can change this to be weekdays, months, or years.
+
+Two of the simpler date time functions are:
+
+- TODAY, returns today’s date
+- NOW, returns today’s date and time
+
+Other day/time functions are self-explanatory:
+
+- YEAR
+- MONTH
+- DAY
+- HOUR
+- MINUTE
+- SECOND
+
+More advanced date and time functions are listed below. These often require additional parameters.
+
+- EOMONTH, calculates the last day of the month
+- YEARFRAC, calculates the fraction of the year represented by the number of days between two dates
+- WEEKDAY, returns the day of week as a number
+- WORKDAY, returns a date that is a specified number of days before a given start date (confusing name, Thank Microsoft!)
+- NETWORKDAYS, calculates the number of workdays between two dates
+- DATEDIF, calculates the number of days between two dates
+
+## Formula-Based Formatting
+
+In Excel, it’s possible to create your own formula-based rules for customizing cells, columns, and rows.
+
+Create custom rules under Home > Conditional Formatting > New Rule… > Use a formula to determine which cells to format
+
+## Dynamic Array Formulas
+
+A single formula can return many results and “spill” over to adjacent cells. The return arrays are called **dynamic arrays**. 
+
+A simple example of dynamic arrays is summing two columns. In a new cell, create a formula and just select all the rows as the numerator and divide by all the other rows as the denominator. Excel creates a single formula in the first cell and spills the dynamic arrays downward.
+
+The **spill range** contains the results of a single dynamic array formula. A **#SPILL!** error occurs when something is blocking the spill range.
+
+Note that references used within dynamic array formulas **do not automatically resize** as you add new data. So either:
+
+- Format the data as a table and used structured references (Ctrl + T to convert data into a table object)
+- Select extra rows to accommodate any new records
+- Define dynamic named ranges using OFFSET and COUNTA
+
+Can also use the hashtag (C2#) to reference all values in a column. Useful for updating a dropdown box for data validation.
+
+Dynamic array functions like SORT, FILTER, and UNIQUE unlock awesome capabilities in Excel.
+
+- SORT, sorts an array by one or more columns contained within the array
+- SORTBY, works like sort but can sort by columns in a different array
+- FILTER, filters an array based on the specified criteria
+- UNIQUE, removes duplicates from the array
+- SEQUENCE, generates a one or two-dimensional array of sequential numbers
+- RANDARRAY, generates a one or two-dimensional array of random numbers
+
+The **FREQUENCY** function returns the frequency of values in a range based on specified intervals (bins). Good for when working with distributions.
+
+The **TRANSPOSE** function flips a vertical range of cells to be horizontal, or vice versa.
+
+The **CHOOSE** function can combine separate cell ranges into a single array that can be referenced by other formulas. Good for combining two spill ranges that need sorting.
+
+The **LET** function allows you to create variables and use them in formulas. Helps you write cleaner formulas.
+
+The **INDIRECT** function returns the reference specified by a text string and can be used to change a cell reference within a formula without changing the formula itself. Can be used in VLOOKUP functions to use an array within a cell rather than the cell itself.
+
+The **HYPERLINK** function creates a link to a web location, another Excel document, or a location within a workbook.
