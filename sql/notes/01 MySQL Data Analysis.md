@@ -41,3 +41,65 @@ SELECT
 FROM
   rental;
 ```
+
+The **SELECT DISTINCT** statement will return the unique values in the columns specified. If multiple columns are queried, this will return the distinct _combinations_ of values across those columns.
+
+```
+SELECT DISTINCT
+  rating
+FROM
+  film
+```
+
+The **WHERE** clause is optional but it’s what you use to filter your query results with conditional logic and the following operators:
+
+- =, equals
+- <>, does not equal
+- >, greater than
+- <, less than
+- >=, greater than or equal to
+- <=, less than or equal to
+- BETWEEN, a range between to values
+- LIKE, matching a pattern like a value
+- IN(), equals one of these values
+
+```
+SELECT
+  customer_id,
+  rental_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  amount = 0.99;
+```
+
+You can also add multiple logical conditions to WHERE statements with AND and OR.
+
+```
+SELECT
+  customer_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  amount = 0.99
+  AND payment_date > ‘2006-01-01’
+```
+
+Next, using **WHERE** and **IN** can be used to reference different values in the same column. It’s a little more elegant than multiple OR clauses.
+
+```
+SELECT
+  customer_id,
+  rental_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  amount > 5 AND
+  customer_id IN (42,53,60,75)
+```
