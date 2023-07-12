@@ -74,3 +74,31 @@ WHERE
   customer_id = 60 OR
   customer_id = 75)
 ```
+
+## 06. The LIKE Operator
+
+Select all the films that include a Behind the Scenes special feature.
+
+```
+SELECT 
+  title,
+  special_features
+FROM
+  film
+WHERE
+  special_features LIKE '%Behind the Scenes'
+```
+
+## 07. GROUP BY
+
+Get the number of movie titles by rental duration.
+
+```
+SELECT
+  rental_duration,
+  COUNT(title)
+FROM
+  film
+GROUP BY
+  rental_duration
+```

@@ -103,3 +103,34 @@ WHERE
   amount > 5 AND
   customer_id IN (42,53,60,75)
 ```
+
+The **LIKE** operator can make your logic more flexible. Instead of querying exact match, you can look for a pattern. For example, we can select all film titles that contain the string “stone”:
+
+```
+SELECT 
+  *
+FROM
+  film
+WHERE
+  title LIKE '%stone%'
+```
+
+The underscore character (_) can be used to look for just one character. ```WHERE title LIKE '_art%'``` returns movie titles like Earth Vision and Party Knock.
+
+Take special note how placement of % and _ can alter query results. % will mean any number of characters and the _ will mean only one.
+
+The **GROUP BY** clause specifies how to group the query results. Useful with aggregate functions, like counting how many records there are by some category, like film rating.
+
+```
+SELECT 
+  rating,
+  COUNT(film_id)
+FROM
+  film
+GROUP BY
+  rating
+```
+
+**Comments** in SQL can be added using two dashes “-—“ for single-line comments or “/* */” for multi-line comments.
+
+**Aliases** can be assigned to queries to change the name of a field. Always good to make your code is human readable.
