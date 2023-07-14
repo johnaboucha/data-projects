@@ -236,3 +236,29 @@ GROUP BY
 ORDER BY
   film_id
 ```
+
+## Multiple Tables and Joins
+
+**Normalization** is the process of structuring the tables and columns in a way to minimize redundancy while preserving data integrity. Basically, this involves breaking a single table into multiple, related tables. Primary and foreign keys are used to represent the relationship between the tables.
+
+**Cardinality** means the uniqueness of values in a column. It’s typically used to describe how two tables relate to one another (one-to-one, one-to-many, or many-to-many).
+
+After the data has been normalized into different tables, the **JOIN** statement can be used to query data from multiple, related tables. Common JOIN types include:
+
+- INNER JOIN, returns records that exist in both tables
+- LEFT JOIN, returns all records from left table and any matching from the right table
+- RIGHT JOIN, returns all records from the right table and any matching left table (not really used)
+- FULL OUTER JOIN, returns all records from both tables
+- UNION, appends data from one table to the bottom of the other table
+
+An example of the INNER JOIN:
+
+```
+SELECT DISTINCT
+  inventory.inventory_id
+FROM
+  inventory
+INNER JOIN rental
+  ON inventory.inventory_id = rental.inventory_id
+LIMIT 5000
+```

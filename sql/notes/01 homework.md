@@ -295,3 +295,19 @@ FROM
 GROUP BY customer_id
 ORDER BY number_of_rentals DESC
 ```
+
+## 21. INNER JOIN
+
+Return every film title, description, and store_id value, and inventory ID.
+
+```
+SELECT
+  film.title,
+  film.description,
+  inventory.store_id,
+  inventory.inventory_id
+FROM
+  film
+INNER JOIN inventory
+  ON inventory.film_id = film.film_id
+```
