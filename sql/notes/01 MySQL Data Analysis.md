@@ -262,3 +262,38 @@ INNER JOIN rental
   ON inventory.inventory_id = rental.inventory_id
 LIMIT 5000
 ```
+
+You can connect to unrelated tables with an intermediary table. This process is called “**bridging**” unrelated tables. The intermediary table will have an ID value that’s shared between the two unconnected tables. Two JOIN statements are needed to do the join. For example:
+
+```
+SELECT
+  film.film_id,
+  film.title,
+  category.name as category
+FROM
+  film
+INNER JOIN film_category
+  ON film.film_id = film_category.film_id
+INNER JOIN category
+  ON film_category.category_id = category.category_id
+```
+
+It’s possible to use JOIN statements with conditional filters such as WHERE and AND being included after or within the JOIN statement.
+
+The **UNION** statement will only return distinct values. To return duplicates, use UNION ALL. An example of UNION is:
+
+```
+SELECT
+  'advisor' as type,
+  first_name,
+  last_name
+FROM
+  advisor
+UNION
+SELECT
+  'investor' as type,
+  first_name,
+  last_name
+FROM
+  investor
+```
