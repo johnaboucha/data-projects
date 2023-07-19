@@ -72,3 +72,35 @@ When creating Calculated Columns it’s a best practice to transform data as clo
 **Append Queries** appears next to merge queries. This allows you to concatenate rows from two tables into a single one, like UNION in SQL.
 
 Like other Microsoft apps, the file references, such as to .CSV files, are a full path name, not a relative file path. If you move your project folder, you will need to update file paths by going into the Home tab > Data source settings > Change Source.
+
+**Parameters** can be used to dynamically manage and update paths in Power Query editor. Create these under the Home > Parameters section.
+
+The **Refresh** command in the Home > Queries menu will refresh all queries. There is also an option to not include a report in the refresh by right-clicking a query and unchecking “include in report refresh”. If you have static data or tables that don’t change, you can increase performance of data refreshes this way.
+
+You can **import Excel models** under the File > Import > Power Query, Power Pivot, Power View menu option.
+
+## Creating a Data Model
+
+A **data model** is a series of tables that are connected by relationships, based on a common field
+
+Database **normalization** is the process of organizing the tables and columns in a relational database in a way that reduces redundancy while preserving data integrity. Used to:
+
+- Reduce table size, increase database speed and efficiency
+- Minimize errors and anomalies from data modifications
+- Simplify queries and structure the database for meaningful analysis
+
+Each table in a normalized database should serve one distinct and specific purpose.
+
+Data models contain two types of tables:
+
+- Fact (“data”) tables, contain numerical values
+- Dimension (“lookup”) tables, contain descriptive values for filtering or grouping data
+
+In the Model View of Power BI, you can define primary keys and relationships between your tables, and it can be done by simply dragging from primary keys to foreign keys across tables. You can also launch the Manage Relationships dialog box.
+
+There are two very common types of **schemas**:
+
+- Star schema, the simplest and most common data model, a single fact table surrounded by related dimensions
+- Snowflake schema, an extension of the star schema that contains dimensions and sub-dimensions
+
+There can only be one **active relationships** between two tables. You can change the active relationship in the Edit Relationship dialog box or in the Properties. Have to deactivate the first one before activating the next.
