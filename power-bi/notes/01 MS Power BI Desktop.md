@@ -104,3 +104,39 @@ There are two very common types of **schemas**:
 - Snowflake schema, an extension of the star schema that contains dimensions and sub-dimensions
 
 There can only be one **active relationships** between two tables. You can change the active relationship in the Edit Relationship dialog box or in the Properties. Have to deactivate the first one before activating the next.
+
+**Relationship cardinality** refers to the uniqueness of values in a column. For example, a one-to-many relationship would have one instance of each primary key and many instances of each foreign keys.
+
+When two fact tables are connected to a shared dimension or lookup table, you can then filter both fact tables by using fields in the shared table, similar to SQL databases.
+
+The arrow icons in the Model view indicated the filter direction, and filter context, between two tables. It’s possible to create a two-way, cross-filter direction in the Properties or Edit relationship dialog box. This **bi-directional** filtering needs to be used with caution, can create inaccurate or incomplete results.
+
+It’s generally best to design models with one-to-many relationship unless a different or more complex relationship is absolutely necessary.
+
+**Hiding fields** makes fields hidden in the report tab but still visible in the Data and Model views. Useful to prevent filtering on incorrect fields. Right-click a field in the Data/Model view and select Hide in report view.
+
+**Model layouts** allow you to create smaller portions of larger, more complex models when in the Model View tab.
+
+**Hierarchies** are groups of columns that reflect multiple levels of granularity that allow you to drill down. Common examples include geography: country, state, city, zip…
+
+## Calculated Fields with DAX
+
+**Data Analysis eXpressions (DAX)** can be used to create calculated columns and measures to the model, custom filtering, iterators, and more.
+
+Calculated columns are used for filtering, and measures used for aggregation.
+
+**M** and **DAX** are two distinct languages. M is used in Power Query editor for ETL processes, and DAX is used in the Power BI front end for analyzing relational data models.
+
+**Calculated columns** let you add formula-based columns to your data model. Uses DAX, looks similar to Excel functions. Have row context. Creates new data.
+
+**Measures** are DAX formulas to generate new calculated fields. Not seen within the table but only shown in a visualization or matrix. Based on filters. Use measures when you want to aggregate. Have filter context. Don’t create new data.
+
+**Implicit measures** are generated when you drag numerical fields int a report visual and manually select an aggregation method (Sum, Average, Min, Max, Count, etc.). Only accessible within the visualization in which they are created.
+
+**Explicit measures** are created when you write DAX formulas and define a new measure that’s used within the model. Can be used anywhere in the report.
+
+**Quick measures** will automatically create formulas based on pre-built templates.
+
+It’s a best practice to create a dedicated table to store your explicit measures.
+
+Measures are evaluated based on **filter context** and will recalculate whenever fields or filters around them change. Click  the filter icon to view what filters are being applied to the selected visual.
