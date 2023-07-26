@@ -140,3 +140,33 @@ Calculated columns are used for filtering, and measures used for aggregation.
 It’s a best practice to create a dedicated table to store your explicit measures.
 
 Measures are evaluated based on **filter context** and will recalculate whenever fields or filters around them change. Click  the filter icon to view what filters are being applied to the selected visual.
+
+Basic **DAX syntax** is as follows:
+
+```
+Total Quantity = SUM(Transactions[quantity])
+```
+
+In this example, *measure name* = function_name(*table name*[*column Name*])
+
+**DAX Operators** are similar to other languages:
+
+- Arithmetic operators: + - * / ^
+- Comparison operators: = > < >= <= <>
+- Logical operators: & && || IN
+
+DAX functions map fairly closely with Excel function categories and include:
+
+- Math and Stats, aggregation and iterators
+- Logical, conditional expressions
+- Text, manipulate strings and formats
+- Filter, manipulate table and filter contexts
+- Table, create and manipulate tables
+- Date and time, working with date and time values
+- Relationship, manage and modify table relationships
+
+Basic Math and Stats functions include SUM, AVERAGE, MAX, MIN, and DIVIDE, which returns an alternate results if dividing by zero.
+
+Basic Counting functions include COUNT, COUNTA, DISTINCTCOUNT, and COUNTROWS.
+
+The basic logical functions include IF, IFERROR, SWITCH, AND, and OR.
