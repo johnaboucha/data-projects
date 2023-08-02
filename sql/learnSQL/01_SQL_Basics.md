@@ -986,12 +986,3 @@ EXCEPT
 SELECT country
 FROM skating
 ```
-
-## Horoscope table
-
-| id | year | sign | content |
-| ---- | ----| ---- |
-| 1 | 2007 | sign | blah, blah, blah… |
-| … | … | … | … |
-
-
