@@ -929,3 +929,69 @@ SELECT
 FROM mountain
 ```
 
+## Athlete tables
+
+_skating_
+
+| id | person | country | year | place |
+| ---- | ----| ---- | ---- |
+| 1 | Clara Hughes | Canada | 2006 | 1 |
+| … | … | … | … | … |
+
+_cycling_
+
+| id | person | country | year | place |
+| ---- | ----| ---- | ---- |
+| 1 | Clara Hughes | Canada | 1996 | 3 |
+| … | … | … | … | … |
+
+Show all the medals for the period between 2010 and 2014 for skating and cycling. Use the UNION keyword.
+
+```
+SELECT *
+FROM skating
+WHERE year BETWEEN 2010 AND 2014
+UNION
+SELECT *
+FROM cycling
+WHERE year BETWEEN 2010 AND 2014
+```
+
+Show all countries which have medals in cycling or skating. Use a union. Don't remove duplicates.
+
+```
+SELECT country
+FROM cycling
+UNION ALL
+SELECT country
+FROM skating
+```
+
+Find names of each person who has medals both in cycling and in skating.
+
+```
+SELECT person
+FROM skating
+INTERSECT
+SELECT person
+FROM cycling
+```
+
+Find all the countries which have a medal in cycling but not in skating.
+
+```
+SELECT country
+FROM cycling
+EXCEPT
+SELECT country
+FROM skating
+```
+
+## Horoscope table
+
+| id | year | sign | content |
+| ---- | ----| ---- |
+| 1 | 2007 | sign | blah, blah, blah… |
+| … | … | … | … |
+
+
