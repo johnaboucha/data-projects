@@ -533,3 +533,90 @@ SELECT code
 FROM route
 WHERE departure BETWEEN '11:00:00' AND '17:00:00'
 ```
+
+Show the code and arrival time of all the routes with arrival before 4:00 PM and order them by arrival with the earliest time coming first.
+
+```
+SELECT
+  code,
+  arrival
+FROM
+  route
+WHERE arrival < '16:00:00'
+ORDER BY arrival 
+```
+
+Show the average distance of all routes which depart after 8:00 AM. Name the column average.
+
+```
+SELECT
+  AVG(distance) AS average
+FROM route
+WHERE departure > '8:00:00'
+```
+
+Identify the id and withdrawn timestamp for all the aircraft withdrawn on or after October 15, 2015. The column names should be id and withdrawn.
+
+```
+SELECT
+  id,
+  withdrawn
+FROM
+  aircraft
+WHERE
+  withdrawn >= '2015-10-15'
+```
+
+Find all the aircraft which were launched in 2015. Show the columns id and launched.
+
+```
+SELECT
+  id,
+  launched
+FROM
+  aircraft
+WHERE launched BETWEEN '2015-01-01 00:00:00' AND '2015-12-31 23:59:59'
+```
+
+For all the aircraft launched in 2013 or 2014, show their id and launch date. Sort by the column launched from the newest to the oldest dates.
+
+```
+SELECT
+  id,
+  launched
+FROM aircraft
+WHERE launched BETWEEN '2013-01-01 00:00:00' AND '2014-12-31 23:59:59'
+ORDER BY launched DESC
+```
+
+For each aircraft, show its id as aircraft_id and calculate the average distance (call it average) covered on all its routes. Only take into account those aircrafts which were launched before January 1, 2014 and took more than 1 flight.
+
+```
+SELECT
+  aircraft.id AS aircraft_id,
+  AVG(distance) AS average
+FROM aircraft
+JOIN flight
+  ON aircraft.id = flight.aircraft_id
+JOIN route
+  ON flight.route_code = route.code
+GROUP BY aircraft.id, launched
+having launched < '2014-01-01 00:00:00'
+  AND count(aircraft.id) > 1
+```
+
+Extract and show the month of each withdrawn date in the table aircraft (name the column month). Show the column withdrawn as the second column for reference.
+
+```
+SELECT EXTRACT (MONTH FROM withdrawn) AS month, withdrawn
+FROM aircraft
+```
+
+For each route, show its code and the departure time in the following, changed format: hh.mm, where hh is the hour and mm the minutes. Name the second column time.
+
+```
+SELECT
+  code,
+  EXTRACT(HOUR FROM departure) || '.' || EXTRACT(MINUTE FROM departure) AS time
+FROM route
+```
