@@ -197,3 +197,91 @@ WHERE slogan.type = 'tv commercial'
 
 ## Numeric Functions
 
+_character_
+
+| column name  | example value |
+| ----| ---- |
+| id   | 1 |
+| player_id | 1 |
+| name	 | Kav |
+| level | 3 |
+|	class	| wizard |
+| account_balance	| 899.34 |
+| hp	 | 100 |
+| mp	 | 200 |
+| strength | 12 |
+| wisdom | 20 |
+| stat_modifier | 1.05 |
+| weight | 65 |
+| height | 1.72 |
+
+_player_
+
+| id  | firstname | lastname |
+| ----| ---- | ---- |
+| 1   | Alan | Gilman |
+| … | … | … |
+
+For each character, display its:
+
+- name
+- level
+- the sum of its hp and mp (name this column sum).
+
+```
+SELECT
+  name,
+  level,
+  hp + mp AS sum
+FROM character
+```
+
+For each character above the first level (level > 1), show the following text:
+
+The account balance for {name} is {money}.
+
+{name} is the name of the character and {money} is the current account_balance. Name the column sentence.
+
+```
+SELECT
+  'The account balance for ' || name || ' is ' || account_balance || '.' AS sentence
+FROM
+  character
+WHERE level > 1
+```
+
+For a character Mnah (name = 'Mnah'), select name, weight, height and the result of the following calculation: weight - height - weight + height (name the last column result). It should equal 0, right?
+
+```
+SELECT
+  name,
+  weight,
+  height,
+  weight - height - weight + height AS result
+FROM
+  character
+WHERE
+  name = 'Mnah'
+```
+
+For each character, show its name, level and the hp/mp ratio (column name ratio). Use casting to get a precise result.
+
+```
+SELECT
+  name,
+  level,
+  CAST(hp as numeric)/mp AS ratio
+FROM
+  character
+```
+
+For each character, show its name and try to divide its mp by its wisdom. Filter out rows with 0 wisdom points. Name the second column ratio.
+
+```
+SELECT
+  name,
+  CAST(mp as numeric)/wisdom AS ratio
+FROM
+  character
+WHERE wisdom != 0
+```
