@@ -620,3 +620,164 @@ SELECT
   EXTRACT(HOUR FROM departure) || '.' || EXTRACT(MINUTE FROM departure) AS time
 FROM route
 ```
+
+For the route from Keflavik (KEF) to Gdansk (GDN), show the departure time from Keflavik in local time for Gdansk (Europe/Warsaw). Name the column local_time.
+
+```
+SELECT departure AT TIME ZONE 'Europe/Warsaw' as local_time
+FROM route
+WHERE from_airport = 'KEF' AND to_airport = 'GDN'
+```
+
+For each route with a distance greater than 600 km, show its code and its departure and arrival at the local time for Tokyo, Japan. Name the last two columns local_departure and local_arrival.
+
+```
+SELECT
+  code,
+  departure AT TIME ZONE 'Asia/Tokyo' AS local_departure,
+  arrival AT TIME ZONE 'Asia/Tokyo' AS local_arrival
+FROM
+  route
+WHERE distance > 600
+```
+
+PerfectAir decided to use the withdrawn aircraft (id = 5). Show its id, its original withdrawn date and the withdrawn date postponed by 1 year and 6 months. Name the last column changed_date.
+
+```
+SELECT
+  id,
+  withdrawn,
+  withdrawn + INTERVAL '1-6' YEAR TO MONTH AS changed_date
+FROM
+  aircraft
+WHERE id = 5
+```
+
+For plane with ID of 4, show the original launch timestamp and the timestamp of when its test period began (it lasted exactly 14 days, 8 hours, 41 minutes and 16 seconds). Name the second column test_date.
+
+```
+SELECT
+  launched,
+  launched - INTERVAL '14 8:41:16' DAY TO SECOND AS test_date
+FROM aircraft
+WHERE id = 4
+```
+
+PerfectAir has changed its schedules. All flights which depart after 1:00 PM have been delayed by 1 hour. Show the code of each route together with the new departure (as new_departure) and arrival times (as new_arrival).
+
+```
+SELECT
+  code,
+  departure + INTERVAL '1' HOUR AS new_departure,
+  arrival + INTERVAL '1' HOUR AS new_arrival
+FROM route
+WHERE departure > '13:00:00'
+```
+
+Show the id and the model for all the aircraft produced in 2014 and 2015.
+
+```
+SELECT
+  id,
+  model
+FROM aircraft
+WHERE produced BETWEEN '2014-01-01'
+  AND CAST('2014-01-01' AS date) + INTERVAL '1' YEAR
+```
+
+Count the number of flights performed in August 2015. Name the column flight_no.
+
+```
+SELECT
+  COUNT(*) AS flight_no
+FROM flight
+WHERE date BETWEEN '2015-08-01'
+  AND CAST('2015-08-01' as date) + INTERVAL '1' MONTH
+```
+
+Find the id of all the aircraft which were produced earlier than 3 months ago.
+
+```
+SELECT id
+FROM aircraft
+WHERE produced < CURRENT_DATE - INTERVAL '3' MONTH
+```
+
+Find the code of all the routes which normally depart within 3 hours from the current time.
+
+```
+SELECT code
+FROM route
+WHERE departure BETWEEN CURRENT_TIME
+  AND CURRENT_TIME + INTERVAL '3' HOUR
+```
+
+Show the code, from_airport, and to_airport for all those routes which depart between 9:00 AM and 3:00 PM.
+
+```
+SELECT
+  code,
+  from_airport,
+  to_airport
+FROM route
+WHERE departure BETWEEN '9:00:00' AND '15:00:00'
+```
+
+For all the flights which took place on July 11, 2015, show the from_airport, to_airport, and the model of the aircraft.
+
+```
+SELECT
+  from_airport,
+  to_airport,
+  model
+FROM flight
+JOIN route
+  ON flight.route_code = route.code
+JOIN aircraft
+  ON flight.aircraft_id = aircraft.id
+WHERE date = '2015-07-11'
+```
+
+Calculate the average delay time for all the flights which took place in August (any year).
+
+```
+SELECT AVG(delay)
+FROM flight
+WHERE EXTRACT(MONTH FROM date) = 8
+```
+
+For each route, show its code together with the number of flights on that route and the average delay on that route. Only take into account flights older than 6 months. Don't show the routes with zero flights on it or NULL average delay. The column names should be: code, count, and avg.
+
+```
+SELECT
+  code,
+  COUNT(*) AS count,
+  AVG(delay) AS avg
+FROM
+  route
+JOIN flight
+  ON flight.route_code = route.code
+WHERE date < CURRENT_DATE - INTERVAL '6 MONTHS'
+GROUP BY code
+```
+
+Group all the flights by the year. Show the year (as year) and calculate the average delay time for each of those years (as avg).
+
+```
+SELECT
+  EXTRACT(YEAR from date) as year,
+  AVG(delay) as avg
+FROM flight
+GROUP BY year
+```
+
+Count the number of distinct aircraft which were used during flights in August 2015. Name the column aircraft_no.
+
+```
+SELECT
+  COUNT(DISTINCT model) AS aircraft_no
+FROM aircraft
+JOIN flight
+  ON aircraft_id = aircraft.id
+WHERE date BETWEEN '2015-08-01' AND '2015-08-31'
+```
