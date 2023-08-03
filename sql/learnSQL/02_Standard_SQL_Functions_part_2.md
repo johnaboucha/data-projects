@@ -24,7 +24,7 @@ _advertisement_
 
 Select name for all products whose launch_date is not a null.
 
-```
+```sql
 SELECT name
 FROM product
 WHERE launch_date IS NOT NULL
@@ -45,4 +45,27 @@ SELECT name
 FROM product
 WHERE price != 299.99
   OR price IS NULL
+```
+
+Select the name for all products together with their categories and types. Exclude rows with category 'kitchen' and those rows which have no category set.
+
+```
+SELECT
+  name,
+  category,
+  type
+FROM product
+WHERE category != 'kitchen'
+```
+
+Mr Amund released a certain series of products on April 30, 2014. Now, he would like to get all the names, categories and types of those products which were introduced any time later or which will be introduced in the future (i.e., they don't have a launch_date yet). Write the proper query.
+
+```
+SELECT
+  name,
+  category,
+  type
+FROM product
+WHERE launch_date > '2014-04-30'
+  OR launch_date IS NULL
 ```
