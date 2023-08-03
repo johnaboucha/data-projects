@@ -285,3 +285,147 @@ FROM
   character
 WHERE wisdom != 0
 ```
+
+For each character, show its name and calculate how many health points will be left if the player decides to sacrifice the maximum number of hp. Name the second column health_points.
+
+```
+SELECT
+  name,
+  mod(hp,7) AS health_points
+FROM
+  character
+```
+
+For each character, show its name, its account_balance and its account_balance rounded to the nearest integer (name this column rounded_account_balance). Notice how mathematical rounding is applied.
+
+```
+SELECT
+  name,
+  account_balance,
+  round(account_balance) AS rounded_account_balance
+FROM
+  character
+```
+
+Show each character's name together with its original account_balance and account_balance rounded to a single decimal place (name this column rounded_account_balance).
+
+```
+SELECT
+  name,
+  account_balance,
+  round(account_balance, 1) AS rounded_account_balance
+FROM
+  character
+```
+
+Let's check some rounding functions in the next few exercises. Show the character's name together with its weight, followed by the weight rounded up (name this column weight_rounded_up.
+
+```
+SELECT
+  name,
+  weight,
+  ceil(weight) AS weight_rounded_up
+FROM
+  character
+```
+
+Show each character's name together with its account_balance followed by the account_balance rounded down. Name the last column floor.
+
+```
+SELECT
+  name,
+  account_balance,
+  floor(account_balance) AS floor
+FROM
+  character
+```
+
+Show the character's name together with its stat_modifier, followed by the stat_modifier rounded with the function trunc(x,p) to a single decimal place. Name the last column trunc. Observe how it behaves for positive and negative numbers.
+
+```
+SELECT
+  name,
+  stat_modifier,
+  trunc(stat_modifier,1) AS trunc
+FROM
+  character
+```
+
+For each character, show its stat_modifier and its absolute value (as absolute_value).
+
+```
+SELECT
+  stat_modifier,
+  abs(stat_modifier) AS absolute_value
+FROM
+  character
+```
+
+Show each character's name, strength and calculate the square root of strength for each of them. Name the last column square_root.
+
+```
+SELECT
+  name,
+  strength,
+  sqrt(strength) AS square_root
+FROM
+  character
+```
+
+Calculate the BMI for every character in the table. BMI is calculated in the following way:
+
+BMI = weight/height^2
+​
+Round the result to an integer. Show the characters name and the calculated BMI (column name bmi).
+
+```
+SELECT
+  name,
+  round(weight/(height*height)) AS bmi
+FROM
+  character
+```
+A healing potion costs 50 gold coins. For each character with an account balance of at least 100, calculate how many healing potions it can buy (column name potion_amount) and how much money it will have left as a result of that purchase (column change). Round the first column down to integers.
+
+```
+SELECT
+  floor(account_balance / 50) AS potion_amount,
+  mod(account_balance, 50) AS change
+FROM
+  character
+WHERE
+  account_balance >= 100
+```
+
+Each warrior (class = 'warrior') at level 3 or higher can perform a special attack whose damage is calculated as follows: its strength plus one fourth of its hp, and then multiplied by the absolute value of stat_modifier. Round this column to 2 decimal places.
+
+Show the name and special attack damage (column damage) calculated for those characters which have the attack available.
+
+```
+SELECT
+  name,
+  round((strength + (hp/4.0)) * abs(stat_modifier),2) AS damage
+FROM
+  character
+WHERE
+  level >= 3 AND class = 'warrior'
+```
+
+For players with IDs equal to 1 and 5, show firstname and lastname together with the level, height rounded to two decimal places, and account_balance rounded down. The column names should be: firstname, lastname, level, height, and account_balance.
+
+```
+SELECT
+  firstname,
+  lastname,
+  level,
+  round(CAST(height as numeric),2) AS height,
+  floor(account_balance) AS account_balance
+FROM
+  player
+JOIN character
+  ON player.id = character.player_id
+WHERE player.id = 1 OR player.id = 5
+```
+
+## Date and Time Functions
+
