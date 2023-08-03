@@ -429,3 +429,107 @@ WHERE player.id = 1 OR player.id = 5
 
 ## Date and Time Functions
 
+_route_
+
+| column name  | example value |
+| ----| ---- |
+| code   | PA2342 |
+| from_airport | FRA |
+| to_airport | WAW |
+| distance | 558 |
+| departure | 07:55:00 |
+| arrival | 09:30:00 |
+
+_aircraft_
+
+| id  | model | produced | launched | withdrawn |
+| ----| ---- | ---- | ---- | ---- |
+| 1   | Airbus A321-200 | 2014-04-05 | 2014-06-10 07:55:00+00 | null |
+| … | … | … | … | … |
+
+_flight_
+
+| id  | route_code | aircraft_id | date | delay |
+| ----| ---- | ---- | ---- | ---- |
+| 2   | PA2342 | 1 | 2016-01-11 | 15 |
+| … | … | … | … | … |
+
+Select the columns id, model and produced for those aircraft which were produced on April 6, 2008 or March 1, 2010.
+
+```
+SELECT
+  id,
+  model,
+  produced
+FROM
+  aircraft
+WHERE produced = '2008-04-06' or produced = '2010-03-01'
+```
+
+Select the columns id, model, produced for all the aircraft which were produced after December 31, 2012.
+
+```
+SELECT
+  id,
+  model,
+  produced
+FROM
+  aircraft
+WHERE
+  produced > '2012-12-31'
+```
+
+Select the id and date of all flights which did NOT take place in 2015.
+
+```
+SELECT
+  id,
+  date
+FROM
+  flight
+WHERE
+  date NOT BETWEEN '2015-01-01' AND '2015-12-31'
+```
+
+Select the id and date of all flights in 2015 and sort them with the newest dates coming first.
+
+```
+SELECT
+  id,
+  date
+FROM
+  flight
+WHERE date BETWEEN '2015-01-01' AND '2015-12-31'
+ORDER BY date DESC
+```
+
+For each aircraft produced in 2010, show its id, production date and the distinctive codes of routes they operate on (rename the column to route_code).
+
+```
+SELECT DISTINCT
+  aircraft.id,
+  produced,
+  route_code
+FROM
+  aircraft
+JOIN
+  flight
+ON flight.aircraft_id = aircraft.id
+WHERE produced BETWEEN '2010-01-01' AND '2010-12-31'
+```
+
+Show the code of the route with the scheduled arrival time of 9:30 AM.
+
+```
+SELECT code
+FROM route
+WHERE arrival = '09:30:00'
+```
+
+Show the code of all the routes which depart between 11:00 AM and 5:00 PM.
+
+```
+SELECT code
+FROM route
+WHERE departure BETWEEN '11:00:00' AND '17:00:00'
+```
