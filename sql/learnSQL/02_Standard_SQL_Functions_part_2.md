@@ -257,3 +257,78 @@ WHERE price IS NOT NULL
 
 ## Aggregate Functions
 
+_client_
+
+| client_id  | name |
+| ----| ---- |
+| 1   | Western Technology |
+| … | … |
+
+_translater_
+
+| translator_id  | first_name | last_name | start_date |
+| ----| ---- | ---- | ---- |
+| 1   | Alicia | Potts | 2015-05-31 |
+| … | … | … | … |
+
+_project_
+
+| column  | example value |
+| ----| ---- |
+| project_id   | 1 |
+| client_id | 1 |
+| translator_id | 1 |
+| start | 2023-03-03 14:30:00+00 |
+| deadline | 2023-03-04 10:00:00+00 |
+| price | 40 |
+| words | 250 |
+| lang_from | PL |
+| lang_to | ES |
+| feedback | null |
+
+Count the number of all the projects for the client with id 1. Name the column projects_no.
+
+```sql
+SELECT count(*) as projects_no
+FROM project
+WHERE client_id = 1
+```
+
+Count all the rows in the table project (name the column all_projects), then count those rows where price is not NULL (name the column projects_with_price).
+
+```sql
+SELECT
+  count(*) as all_projects,
+  count(price) as projects_with_price
+FROM project
+```
+
+The agency manager gets a bonus of 5 for each project which got some feedback.
+
+Show the theoretical sum the project manager could get if all the projects got some feedback (theoretical_bonus) and the actual bonus (actual_bonus).
+
+```sql
+SELECT
+  COUNT(*) * 5 as theoretical_bonus,
+  COUNT(feedback) * 5 as actual_bonus
+FROM project
+```
+
+The feedback of 0 doesn't mean anything to agency managers. They want to find out how many projects got meaningful (non-zero) feedback.
+
+Count the number of project with non-zero feedback. Name the column projects_no.
+
+```sql
+SELECT
+  COUNT(feedback) as projects_no
+FROM project
+WHERE feedback != 0
+```
+
+Count the number of translators that did translate at least one project. Name the column translator_no
+
+```sql
+SELECT
+  COUNT(DISTINCT translator_id) as translator_no
+FROM project
+```
