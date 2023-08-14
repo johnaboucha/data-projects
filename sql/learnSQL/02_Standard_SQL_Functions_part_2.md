@@ -866,3 +866,192 @@ SELECT
 FROM candidate
 WHERE score_math >= 30 AND score_language >= 30
 ```
+
+Count the number of courses with possible scholarship (scholarship_present) and without them (scholarship_missing).
+
+```sql
+SELECT
+  COUNT(CASE
+        WHEN scholarship = 't' THEN scholarship END) as scholarship_present,
+  COUNT(CASE
+        WHEN scholarship = 'f' THEN scholarship END) as scholarship_missing
+FROM course
+```
+
+Count the number of candidates who scored:
+
+- at least 80 in math (good_math).
+- at least 60 and less than 80 (average_math).
+- or less than 60 (poor_math).
+
+Show only those candidates who have provided a preferred_contact form.
+
+```sql
+SELECT
+  COUNT(CASE WHEN score_math >= 80 THEN 1 END) as good_math,
+  COUNT(CASE WHEN score_math BETWEEN 60 AND 80 THEN 1 END) as average_math,
+  COUNT(CASE WHEN score_math < 60 THEN 1 END) as poor_math
+FROM candidate
+WHERE preferred_contact IS NOT NULL
+```
+
+Show how many students paid the full fee of 50 (full_fee_sum) and the reduced fee of 10 (reduced_fee_sum), but if a certain student paid the same amount for more than one degree course, count them only once.
+
+```sql
+SELECT
+  COUNT(DISTINCT CASE
+        WHEN fee = 50 THEN candidate_id END) as full_fee_sum,
+  COUNT(DISTINCT CASE
+        WHEN fee = 10 THEN candidate_id END) as reduced_fee_sum
+FROM application
+```
+
+For each course, show its id (name the column course_id) and three more columns: accepted, pending and rejected, each containing the number of accepted, pending and rejected applications for that course, respectively. (Don't show the courses that aren't present in the application table.)
+
+Sort the results by ID in ASCending order.
+
+```sql
+SELECT
+  course_id,
+  COUNT(CASE WHEN status = 'accepted' THEN 1 END) as accepted,
+  COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+  COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected
+FROM application
+GROUP BY course_id
+ORDER BY course_id
+```
+
+For each candidate, with at least one application, show their id and three more columns called count_accepted, count_rejected, count_pending. Each of these columns should count the number of times the candidate has been accepted to courses, rejected or where the decision is pending.
+
+Sort the rows in ASCending order by the id.
+
+```sql
+SELECT
+  candidate_id as id,
+  COUNT(CASE WHEN status = 'accepted' THEN 1 END) as count_accepted,
+  COUNT(CASE WHEN status = 'rejected' THEN 1 END) as count_rejected,
+  COUNT(CASE WHEN status = 'pending' THEN 1 END) as count_pending
+FROM application
+GROUP BY id
+ORDER BY id
+```
+
+For each degree course, show its ID (as id) and the number of distinct candidates who applied for this course and have the preferred_contact set to:
+
+- 'mobile' (column: count_mobile),
+- 'mail' (column: count_mail).
+
+```sql
+SELECT
+  course_id as id,
+  COUNT(DISTINCT CASE
+        WHEN preferred_contact = 'mobile' THEN candidate_id END) as count_mobile,
+  COUNT(DISTINCT CASE
+        WHEN preferred_contact = 'mail' THEN candidate_id END) as count_mail
+FROM application
+JOIN candidate ON
+  application.candidate_id = candidate.id
+GROUP BY course_id
+```
+
+Show each preferred_contact form with the number of candidates who provided it (as candidates_count). Along with that, show a column entitled 'rating' and show:
+
+- 'high' if there are more than 5 candidates with this form of contact.
+- 'low' otherwise.
+
+```sql
+SELECT
+  preferred_contact,
+  COUNT(id) as candidates_count,
+  CASE
+    WHEN COUNT(id) > 5 THEN 'high'
+    ELSE 'low'
+  END as rating
+FROM candidate
+GROUP BY preferred_contact
+```
+
+Use the construction we have just shown you to count the number of candidates who scored:
+
+- at least 70 in the language test ('good score').
+- at least 40 ('average score').
+- and below 40 ('poor score').
+
+The column names should be case and count.
+
+```sql
+SELECT
+  CASE
+    WHEN score_language >= 70 THEN 'good score'
+    WHEN score_language >= 40 THEN 'average score'
+    ELSE 'poor score'
+  END as case,
+  COUNT(id) as count
+FROM candidate
+GROUP BY CASE
+  WHEN score_language >= 70 THEN 'good score'
+  WHEN score_language >= 40 THEN 'average score'
+  ELSE 'poor score'
+END
+```
+
+For each course, show its name and a second column based on the column graduate_satisfaction:
+
+- if it's above 80, show 'satisfied'.
+- if it's above 50, show 'moderately satisfied'.
+- if it's 50 or less, show 'not satisfied'.
+
+Name the second column satisfaction_level.
+
+```sql
+SELECT
+  name,
+  CASE
+    WHEN graduate_satisfaction > 80 THEN 'satisfied'
+    WHEN graduate_satisfaction > 50 THEN 'moderately satisfied'
+    WHEN graduate_satisfaction <= 50 THEN 'not satisfied'
+  END as satisfaction_level
+FROM course
+```
+
+Show the number of students who scored at least 60 in both math and language (as versatile_candidates) and the number of students who scored below 40 in both of these tests (as poor_candidates). Don't include students with NULL preferred_contact.
+
+```sql
+SELECT
+  COUNT(CASE
+        WHEN score_math >= 60 AND score_language >= 60
+        THEN 1 END) as versatile_candidates,
+  COUNT(CASE
+        WHEN score_math < 40 AND score_language < 40
+        THEN 1 END) as poor_candidates
+FROM candidate
+WHERE preferred_contact IS NOT NULL
+```
+
+Show each degree course name and a second column called popularity. If at least 5 distinct candidates applied, show 'high', otherwise show 'low'.
+
+```sql
+SELECT
+  name,
+  CASE WHEN COUNT(DISTINCT candidate_id) > 5 THEN 'high' ELSE 'low' END as popularity
+FROM course
+JOIN application
+  ON course.id = application.course_id
+GROUP BY name
+```
+
+For each degree course, show its name, the place_limit, the number of people who applied for that degree course (as candidates_no) and yet another column popularity: if more people applied than place_limit, show 'overcrowded'. Otherwise, show 'within limit'.
+
+```sql
+SELECT
+  name,
+  place_limit,
+  COUNT(DISTINCT candidate_id) as candidates_no,
+  CASE
+    WHEN COUNT(DISTINCT candidate_id) > place_limit THEN 'overcrowded'
+    ELSE 'within limit' END as popularity
+FROM course
+LEFT JOIN application
+  ON course.id = application.course_id
+GROUP BY name, place_limit
+```
