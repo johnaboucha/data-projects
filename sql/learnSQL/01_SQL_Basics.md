@@ -774,7 +774,7 @@ WHERE difficulty IN (1,2,3)
 
 Find all information about all trips in cities whose area is greater than 100.
 
-```
+```sql
 SELECT *
 FROM trip
 WHERE city_id IN (
