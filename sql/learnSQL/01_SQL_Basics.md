@@ -14,19 +14,19 @@ Car table fields:
 
 Select all data from the car table.
 
-```
+```sql
 SELECT * FROM CAR;
 ```
 
 Select brand names from the car table.
 
-```
+```sql
 SELECT BRAND FROM CAR;
 ```
 
 Select model and price from table car.
 
-```
+```sql
 SELECT
   MODEL, PRICE
 FROM CAR
@@ -34,7 +34,7 @@ FROM CAR
 
 Select all columns for those cars which were produced (column production_year) in 1999.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRODUCTION_YEAR = 1999
@@ -42,7 +42,7 @@ WHERE PRODUCTION_YEAR = 1999
 
 Select all columns for all cars with price higher than $10,000.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRICE > 10000
@@ -50,7 +50,7 @@ WHERE PRICE > 10000
 
 Select all columns for those cars which weren't produced in 1999.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRODUCTION_YEAR != 1999
@@ -58,7 +58,7 @@ WHERE PRODUCTION_YEAR != 1999
 
 Select brand, model and production year of all cars cheaper than or equal to $11,300.
 
-```
+```sql
 SELECT BRAND, MODEL, PRODUCTION_YEAR
 FROM CAR
 WHERE PRICE <= 11300
@@ -66,7 +66,7 @@ WHERE PRICE <= 11300
 
 Select vins of all cars which were produced before 2005 or whose price is below $10,000.
 
-```
+```sql
 SELECT VIN
 FROM CAR
 WHERE PRODUCTION_YEAR < 2005 OR PRICE < 10000
@@ -74,7 +74,7 @@ WHERE PRODUCTION_YEAR < 2005 OR PRICE < 10000
 
 Select vins of all cars which were produced after 1999 and are cheaper than $7,000.
 
-```
+```sql
 SELECT VIN
 FROM CAR
 WHERE PRODUCTION_YEAR > 1999 AND PRICE < 7000
@@ -82,7 +82,7 @@ WHERE PRODUCTION_YEAR > 1999 AND PRICE < 7000
 
 Select vin, brand, and model of all cars which were produced between 1995 and 2005.
 
-```
+```sql
 SELECT
   VIN, BRAND, MODEL
 FROM CAR
@@ -91,7 +91,7 @@ WHERE PRODUCTION_YEAR BETWEEN 1995 AND 2005
 
 Select vin, brand, and model of all cars except for those produced between 1995 and 2005.
 
-```
+```sql
 SELECT
   VIN, BRAND, MODEL
 FROM CAR
@@ -100,7 +100,7 @@ WHERE PRODUCTION_YEAR NOT BETWEEN 1995 AND 2005
 
 Select the vin of all cars which were produced before 1999 or after 2005 and whose price is lower than $4,000 or greater than $10,000.
 
-```
+```sql
 SELECT VIN
 FROM CAR
 WHERE (PRODUCTION_YEAR NOT BETWEEN 1999 AND 2005)
@@ -109,7 +109,7 @@ WHERE (PRODUCTION_YEAR NOT BETWEEN 1999 AND 2005)
 
 Select all columns of all Ford cars from the table.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE BRAND = 'Ford'
@@ -117,7 +117,7 @@ WHERE BRAND = 'Ford'
 
 Select vin, brand, and model of all cars whose brand begins with an F.
 
-```
+```sql
 SELECT
   VIN, BRAND, MODEL
 FROM CAR
@@ -126,7 +126,7 @@ WHERE BRAND LIKE 'F%'
 
 Select vin of all cars whose model ends with an s.
 
-```
+```sql
 SELECT VIN
 FROM CAR
 WHERE MODEL LIKE '%s'
@@ -134,7 +134,7 @@ WHERE MODEL LIKE '%s'
 
 Select all columns for cars which brand matches 'Volk_wagen'.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE BRAND LIKE 'Volk_wagen'
@@ -142,7 +142,7 @@ WHERE BRAND LIKE 'Volk_wagen'
 
 Select all columns for each car whose price column isn't a NULL value.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRICE IS NOT NULL
@@ -150,7 +150,7 @@ WHERE PRICE IS NOT NULL
 
 Select all columns for each car whose price is unknown (NULL).
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRICE IS NULL
@@ -158,7 +158,7 @@ WHERE PRICE IS NULL
 
 Select all columns for cars whose price column is greater than or equal to zero.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRICE > 0
@@ -166,7 +166,7 @@ WHERE PRICE > 0
 
 Select all columns for cars with a tax amount over $2000. The tax amount for all cars is 20% of their price. Multiply the price by 0.2 to get the tax amount.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE PRICE * 0.2 > 2000
@@ -179,7 +179,7 @@ Select all columns of those cars that:
 - have a model that begins with either 'P' or 'F'
 - have their price set.
 
-```
+```sql
 SELECT *
 FROM CAR
 WHERE (PRODUCTION_YEAR BETWEEN 1999 AND 2005)
@@ -206,14 +206,14 @@ _director_
 
 Get all the data from two tables: movie and director.
 
-```
+```sql
 SELECT *
 FROM movie, director
 ```
 
 Select all columns from tables movie and director in such a way that a movie is shown together with its director.
 
-```
+```sql
 SELECT *
 FROM movie, director
 WHERE movie.director_id = director.id
@@ -221,7 +221,7 @@ WHERE movie.director_id = director.id
 
 Use the new construction JOIN ... ON to join rows from the tables movie and director in such a way that a movie is shown together with its director. Display all columns from both tables.
 
-```
+```sql
 SELECT *
 FROM movie
 JOIN director
@@ -230,7 +230,7 @@ JOIN director
 
 Select director name and movie title from tables movie and director in such a way that a movie is shown together with its director.
 
-```
+```sql
 SELECT
   movie.title,
   director.name
@@ -242,7 +242,7 @@ JOIN director ON
 
 Select director name and movie title from the movie and director tables in such a way that a movie is shown together with its director. Don't write table names in the SELECT clause.
 
-```
+```sql
 SELECT
   name,
   title
@@ -254,7 +254,7 @@ JOIN director ON
 
 In this exercise, show the title column as movie_title. We wrote the query from the previous exercise in the template, so you just have to add a proper alias.
 
-```
+```sql
 SELECT
   title as movie_title,
   name
@@ -265,7 +265,7 @@ JOIN director
 
 Select all columns from tables movie and director in such a way that a movie is shown together with its director. Select only those movies which were made after 2000. In the joining condition, let the first table be movie and the second table be director.
 
-```
+```sql
 SELECT *
 FROM movie
 JOIN director ON
@@ -275,7 +275,7 @@ WHERE movie.production_year > 2000
 
 Select all columns from tables movie and director in such a way that a movie is shown together with its director. Select only those movies which were directed by Steven Spielberg.
 
-```
+```sql
 SELECT *
 FROM movie
 JOIN director ON
@@ -287,7 +287,7 @@ Select the title and production_year columns from the movie table, and the name 
 
 Show the column birth_year as born_in. Select only those movies which were filmed when their director was younger than 40 (i.e. the difference between production_year and birth_year must be less than 40).
 
-```
+```sql
 SELECT
   title,
   production_year,
@@ -307,7 +307,7 @@ Select only those movies:
 - whose title contains a letter 'a' and which were filmed after 2000, **or**
 - whose director was born between 1945 and 1995.
 
-```
+```sql
 SELECT
   movie.id,
   title,
@@ -331,7 +331,7 @@ WHERE (title LIKE '%a%' AND production_year > 2000)
 
 Select all columns from the table employees and sort them according to the salary.
 
-```
+```sql
 SELECT *
 FROM employees
 ORDER BY salary
@@ -339,7 +339,7 @@ ORDER BY salary
 
 Select only the rows related to the year 2011 from the table employees. Sort them by salary.
 
-```
+```sql
 SELECT *
 FROM employees
 WHERE year = 2011
@@ -348,7 +348,7 @@ ORDER BY salary
 
 Select all rows from the table employees and sort them in the descending order by the column last_name.
 
-```
+```sql
 SELECT *
 FROM employees
 ORDER BY last_name DESC
@@ -356,7 +356,7 @@ ORDER BY last_name DESC
 
 Select all rows from the table employees and sort them in the ascending order by the department and then in the descending order by the salary.
 
-```
+```sql
 SELECT *
 FROM employees
 ORDER BY department ASC, salary DESC
@@ -364,21 +364,21 @@ ORDER BY department ASC, salary DESC
 
 Select the column year for all rows in the table employees. Then examine the result carefully.
 
-```
+```sql
 SELECT year
 FROM employees
 ```
 
 Select the column year from the table employees in such a way that each year is only shown once.
 
-```
+```sql
 SELECT DISTINCT year
 FROM employees
 ```
 
 Select the columns department and position from the table employees and eliminate duplicates.
 
-```
+```sql
 SELECT DISTINCT
   department,
   position
@@ -387,35 +387,35 @@ FROM employees
 
 Count all rows in the table employees.
 
-```
+```sql
 SELECT COUNT(*)
 FROM employees
 ```
 
 Check how many non-NULL values in the column position there are in the table employees. Name the column non_null_no.
 
-```
+```sql
 SELECT COUNT(position) as non_null_no
 FROM employees
 ```
 
 Count how many different positions there are in the table employees. Name the column distinct_positions.
 
-```
+```sql
 SELECT COUNT(DISTINCT position) as distinct_positions
 FROM employees
 ```
 
 Select the highest salary from the table employees.
 
-```
+```sql
 SELECT MAX(salary)
 FROM employees
 ```
 
 Find the average salary in the table employees for the year 2013.
 
-```
+```sql
 SELECT AVG(salary)
 FROM employees
 WHERE year = 2013
@@ -423,7 +423,7 @@ WHERE year = 2013
 
 Find the sum of all salaries in the Marketing department in 2014. Remember to put the department name in inverted commas!
 
-```
+```sql
 SELECT SUM(salary)
 FROM employees
 WHERE department = 'Marketing'
@@ -432,7 +432,7 @@ WHERE department = 'Marketing'
 
 Find the number of employees in each department in the year 2013. Show the department name together with the number of employees. Name the second column employees_no.
 
-```
+```sql
 SELECT
   department,
   COUNT(*) as employees_no
@@ -443,7 +443,7 @@ GROUP BY department
 
 Show all departments together with their lowest and highest salary in 2014.
 
-```
+```sql
 SELECT
   department,
   MIN(salary),
@@ -455,7 +455,7 @@ GROUP BY department
 
 For each department find the average salary in 2015.
 
-```
+```sql
 SELECT
   department,
   AVG(salary)
@@ -466,7 +466,7 @@ GROUP BY department
 
 Find the average salary for each employee. Show the last name, the first name, and the average salary. Group the table by the last name and the first name.
 
-```
+```sql
 SELECT
   last_name,
   first_name,
@@ -475,7 +475,7 @@ SELECT
 
 Find the average salary for each employee. Show the last name, the first name, and the average salary. Group the table by the last name and the first name.
 
-```
+```sql
 SELECT
   last_name,
   first_name,
@@ -486,7 +486,7 @@ GROUP BY last_name, first_name
 
 Find such employees who (have) spent more than 2 years in the company. Select their last name and first name together with the number of years worked (name this column years).
 
-```
+```sql
 SELECT
   last_name,
   first_name,
@@ -498,7 +498,7 @@ HAVING COUNT(years) > 2
 
 Find such departments where the average salary in 2012 was higher than $3,000. Show the department name with the average salary.
 
-```
+```sql
 SELECT
   department,
   AVG(salary)
@@ -510,7 +510,7 @@ HAVING AVG(salary) > 3000
 
 Sort the employees according to their summary salaries. Highest values should appear first. Show the last name, the first name, and the sum.
 
-```
+```sql
 SELECT
   last_name,
   first_name,
@@ -524,7 +524,7 @@ Show the columns last_name and first_name from the table employees together with
 
 Use the following aliases: average_salary for each person's average salary and years_worked for the number of years worked in the company. Show only such employees who (have) spent more than 2 years in the company. Order the results according to the average salary in the descending order.
 
-```
+```sql
 SELECT
   last_name,
   first_name,
@@ -561,13 +561,13 @@ _equipment_
 
 Get all the data from the table student.
 
-```
+```sql
 SELECT * FROM student
 ```
 
 Join the two tables: student and room so that each student is shown together with the room they live in. Select all columns.
 
-```
+```sql
 SELECT *
 FROM student
 JOIN room ON
@@ -578,7 +578,7 @@ Join the student and room tables so that each student is shown together with the
 
 Select the name of the student and room number.
 
-```
+```sql
 SELECT
   name,
   room_number
@@ -589,7 +589,7 @@ JOIN room ON
 
 Now, use the full name INNER JOIN to join the room and equipment tables, so that each piece of equipment is shown together with its room and other relevant columns.
 
-```
+```sql
 SELECT
   room_id,
   room_number,
@@ -604,7 +604,7 @@ INNER JOIN equipment ON
 
 Show all rows from the table student. If a student is assigned to a room, show the room data as well.
 
-```
+```sql
 SELECT *
 FROM student
 LEFT JOIN room ON
@@ -613,7 +613,7 @@ LEFT JOIN room ON
 
 Select all pieces of equipment together with the room they are assigned to. Show each piece of equipment even if it isn't assigned to a room. Select all available columns.
 
-```
+```sql
 SELECT *
 FROM equipment
 LEFT JOIN room ON
@@ -622,7 +622,7 @@ LEFT JOIN room ON
 
 For each student show their data with the data of the room they live in. Show also rooms with no students assigned. Use a RIGHT JOIN.
 
-```
+```sql
 SELECT *
 FROM student
 RIGHT JOIN room ON
@@ -631,7 +631,7 @@ RIGHT JOIN room ON
 
 Use the full name RIGHT OUTER JOIN to show all the kettles together with their room data (even if there is no room assigned).
 
-```
+```sql
 SELECT *
 FROM room
 RIGHT OUTER JOIN equipment ON
@@ -641,7 +641,7 @@ WHERE name = 'kettle'
 
 Use NATURAL JOIN on the tables student and room.
 
-```
+```sql
 SELECT *
 FROM student
 NATURAL JOIN room
@@ -649,7 +649,7 @@ NATURAL JOIN room
 
 Use INNER JOIN on the tables room and equipment so that all pieces of equipment are shown with their room data. Use table aliases r and e. Select the columns id and name from the table equipment, as well as room_number and beds from the table room.
 
-```
+```sql
 SELECT 
   e.id,
   e.name,
@@ -662,7 +662,7 @@ INNER JOIN equipment as e ON
 
 Use self-joining to show all the columns for the student Jack Pearson together with all the columns for each student living with him in the same room.
 
-```
+```sql
 SELECT *
 FROM student as jack_pearson
 JOIN student as roommate
@@ -679,7 +679,7 @@ For each room with 2 beds where there actually are 2 students, we want to show o
 
 Don't change any column names. Each pair of students should only be shown once. The student whose name comes first in the alphabet should be shown first.
 
-```
+```sql
 SELECT
   s1.name,
   s2.name,
@@ -731,7 +731,7 @@ _city_
 
 Show all information about all cities which have the same area as Paris.
 
-```
+```sql
 SELECT *
 FROM city
 WHERE area = (
@@ -743,7 +743,7 @@ WHERE area = (
 
 Find the names of all cities which have a population lower than Madrid.
 
-```
+```sql
 SELECT name
 FROM city
 WHERE population < (
@@ -755,7 +755,7 @@ WHERE population < (
 
 Find all information about trips whose price is higher than the average.
 
-```
+```sql
 SELECT *
 FROM trip
 WHERE price > (
@@ -766,7 +766,7 @@ WHERE price > (
 
 Find all information about hiking trips with difficulty 1, 2, or 3.
 
-```
+```sql
 SELECT *
 FROM hiking_trip
 WHERE difficulty IN (1,2,3)
@@ -786,7 +786,7 @@ WHERE city_id IN (
 
 Find all information about the cities which are less populated than all countries in the database.
 
-```
+```sql
 SELECT *
 FROM city
 WHERE population < ALL (
@@ -797,7 +797,7 @@ WHERE population < ALL (
 
 Find all information about all the city trips which have the same price as any hiking trip.
 
-```
+```sql
 SELECT *
 FROM trip
 WHERE price = ANY (
@@ -808,7 +808,7 @@ WHERE price = ANY (
 
 Find all information about each country whose population is equal to or smaller than the population of the least populated city in that specific country.
 
-```
+```sql
 SELECT *
 FROM country
 WHERE population <= (
@@ -820,7 +820,7 @@ WHERE population <= (
 
 Find all information about cities with a rating higher than the average rating for all cities in that specific country.
 
-```
+```sql
 SELECT *
 FROM city AS avg_city
 WHERE rating > (
@@ -832,7 +832,7 @@ WHERE rating > (
 
 Show all information about all trips to cities which have a rating lower than 4.
 
-```
+```sql
 SELECT *
 FROM trip
 WHERE city_id IN (
@@ -844,7 +844,7 @@ WHERE city_id IN (
 
 Select all countries where there is at least one mountain.
 
-```
+```sql
 SELECT *
 FROM country
 WHERE EXISTS (
@@ -856,7 +856,7 @@ WHERE EXISTS (
 
 Select all mountains with no hiking trips to them.
 
-```
+```sql
 SELECT *
 FROM mountain
 WHERE NOT EXISTS (
@@ -868,7 +868,7 @@ WHERE NOT EXISTS (
 
 Select the hiking trip with the longest distance (column length) for every mountain.
 
-```
+```sql
 SELECT *
 FROM hiking_trip AS main_trip
 WHERE length >= ALL (
@@ -880,7 +880,7 @@ WHERE length >= ALL (
 
 Select those trips which last shorter than any hiking_trip with the same price.
 
-```
+```sql
 SELECT *
 FROM trip
 WHERE days < ANY (
@@ -892,7 +892,7 @@ WHERE days < ANY (
 
 Show mountains together with their countries. The countries must have at least 50,000 residents.
 
-```
+```sql
 SELECT *
 FROM mountain, (
   SELECT *
@@ -904,7 +904,7 @@ WHERE mountain.country_id = country.id
 
 Show hiking trips together with their mountains. The mountains must be at least 3,000 high. Select only the columns length and height.
 
-```
+```sql
 SELECT
   length,
   height
@@ -918,7 +918,7 @@ WHERE mountain.id = hiking_trip.mountain_id
 
 Show each mountain name together with the number of hiking trips to that mountain (name the column count).
 
-```
+```sql
 SELECT
   name,
   (
@@ -947,7 +947,7 @@ _cycling_
 
 Show all the medals for the period between 2010 and 2014 for skating and cycling. Use the UNION keyword.
 
-```
+```sql
 SELECT *
 FROM skating
 WHERE year BETWEEN 2010 AND 2014
@@ -959,7 +959,7 @@ WHERE year BETWEEN 2010 AND 2014
 
 Show all countries which have medals in cycling or skating. Use a union. Don't remove duplicates.
 
-```
+```sql
 SELECT country
 FROM cycling
 UNION ALL
@@ -969,7 +969,7 @@ FROM skating
 
 Find names of each person who has medals both in cycling and in skating.
 
-```
+```sql
 SELECT person
 FROM skating
 INTERSECT
@@ -979,7 +979,7 @@ FROM cycling
 
 Find all the countries which have a medal in cycling but not in skating.
 
-```
+```sql
 SELECT country
 FROM cycling
 EXCEPT
