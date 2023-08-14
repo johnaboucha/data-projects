@@ -332,3 +332,183 @@ SELECT
   COUNT(DISTINCT translator_id) as translator_no
 FROM project
 ```
+
+Count how many distinct rates per word our translation agency uses. To obtain the rate for one word, divide the price by number of words. Name the column rates.
+
+Make sure not to use integer division.
+
+```sql
+SELECT
+  COUNT(DISTINCT CAST(price as FLOAT) / words) as rates
+FROM project
+```
+
+Show clients IDs (client_id) together with the number of projects they have commissioned. Name the second column projects_no. Don't show clients without any project.
+
+```sql
+SELECT
+  client_id,
+  COUNT(project_id) as projects_no
+FROM project
+GROUP BY client_id
+```
+
+For each project, show the client_id and the number of projects commissioned by that specific client which have some feedback (zero if there are no such projects). Name the second column projects_no.
+
+```sql
+SELECT
+  client_id,
+  COUNT(feedback) as projects_no
+FROM project
+GROUP BY client_id
+```
+
+For each translator in table project, show their ID (as translator_id) and the number of clients they have worked for. Name the second column clients_no.
+
+```sql
+SELECT
+  translator_id,
+  COUNT(DISTINCT client_id) as clients_no
+FROM project
+GROUP BY translator_id
+```
+
+The rate per word is the price divided by the number of words. For every translator, show ID together with number of distinct rates per word they used in their projects. Name the second column rates_no.
+
+```sql
+SELECT
+  translator_id,
+  COUNT(DISTINCT CAST(price as FLOAT) / words) as rates_no
+FROM project
+GROUP BY translator_id
+```
+
+Show the first and last name of each translator together with the number of projects they have completed (0 if there are no such projects). Name the last column projects_no.
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  COUNT(project_id) as projects_no
+FROM translator
+LEFT JOIN project
+  ON project.translator_id = translator.translator_id
+GROUP BY last_name, first_name
+```
+
+For each client, show their name, the number of projects they have commissioned and the number of translators that have worked for that client. Do not count projects with a deadline within the last 3 months. The column names should be: name, projects_no, and translators_no.
+
+```sql
+SELECT
+  name,
+  COUNT(project_id) as projects_no,
+  COUNT(DISTINCT translator_id) as translators_no
+FROM
+  client
+LEFT JOIN project
+  ON client.client_id = project.client_id
+WHERE deadline < CURRENT_TIMESTAMP - INTERVAL '3' MONTH
+GROUP BY name
+```
+
+For each language combination (e.g. EN to ES, ES to EN, DE to PL etc.) show lang_from, lang_to and two more columns:
+
+1. the number of projects completed in this combination (as projects_no).
+1. the number of translators that have completed at least one project in that language combination (as translators_no).
+
+All completed projects are present in the project table.
+
+```sql
+SELECT
+  lang_from,
+  lang_to,
+  COUNT(project_id) as projects_no,
+  COUNT(DISTINCT translator_id) as translators_no
+FROM project
+GROUP BY lang_from, lang_to
+```
+
+Find the average number of words from all projects with Spanish (ES) as the target language. Name the column average.
+
+```sql
+SELECT AVG(words) as average
+FROM project
+WHERE lang_to = 'ES'
+```
+
+Show each translator's ID together with the average number of words they had to translate in all their projects (as average). Exclude project with ID 6 – it was cancelled.
+
+```sql
+SELECT
+  translator_id,
+  AVG(words) as average
+FROM project
+WHERE project_id != 6
+GROUP BY translator_id
+```
+
+Take a look at the three projects of Adriana Fuentes, translator with ID 5. Two of them have a NULL number of words.
+
+Find the average number of words for all the projects of this translator. Name the column average. What do you think the average will be?
+
+```sql
+SELECT
+  AVG(words) as average
+FROM project
+WHERE translator_id = 5
+```
+
+Let's calculate the average number of words in all the projects done by translator with id = 5 again.
+
+This time, though, exclude project_id = 13 from the rows so that the only two projects left are the ones with a NULL value. Name column average.
+
+```sql
+SELECT
+  AVG(words) as average
+FROM project
+WHERE translator_id = 5 AND project_id != 13
+```
+
+Find the average number of words per project translated so far by Adriana Fuentes (translator_id = 5). Assume that NULL in column words means that nothing has been translated yet (treat it as words = 0). Name the result average.
+
+```sql
+SELECT
+  AVG(COALESCE(words, 0)) as average
+FROM project
+WHERE translator_id = 5
+```
+
+For client with ID 10, find the average price (as avg_price) and average distinct price (as avg_distinct_price).
+
+```sql
+SELECT
+  AVG(price) as avg_price,
+  AVG(DISTINCT price) as avg_distinct_price
+FROM project
+WHERE client_id = 10
+```
+
+For each client in the project table, show the client ID and find the average price for all their projects rounded to integer values. Column names should be client_id and rounded_average.
+
+```sql
+SELECT
+  client_id,
+  ROUND(AVG(price)) as rounded_average
+FROM project
+GROUP BY client_id
+```
+
+For each translator, show their first and last name together with the average price of all the projects they have completed (as rounded_average). Round the price to two decimal places. Count only the projects with the number of words greater than 500. Exclude translators who have completed fewer than 2 projects (all completed projects are present in the project table).
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  ROUND(AVG(price), 2) as rounded_average
+FROM translator
+LEFT JOIN project
+  ON translator.translator_id = project.translator_id
+WHERE words > 500
+GROUP BY first_name, last_name
+HAVING COUNT(*) > 1
+```
