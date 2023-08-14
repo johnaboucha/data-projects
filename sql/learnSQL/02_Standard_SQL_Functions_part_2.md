@@ -512,3 +512,357 @@ WHERE words > 500
 GROUP BY first_name, last_name
 HAVING COUNT(*) > 1
 ```
+
+Find the total number of words translated in all the projects. Name the column sum.
+
+```sql
+SELECT
+  SUM(words)
+FROM project
+```
+
+Remember the translator with translator_id = 5 Adriana Fuentes? Let's go back there again. Sum all the words from all her projects except for project_id = 13 so that you only sum NULLs. Name the column sum.
+
+```sql
+SELECT SUM(words)
+FROM project
+WHERE translator_id = 5 AND project_id != 13
+```
+
+Show translator ids with the sum of the prices of all the projects they have completed (as sum). Exclude project_id = 13 so that one of the translators has NULL prices only. Instead of that NULL sum, show 0.
+
+```sql
+SELECT
+  translator_id,
+  COALESCE(SUM(price),0) as sum
+FROM project
+WHERE project_id != 13
+GROUP BY translator_id
+```
+
+For client with id = 10, find the sum of the number of words in their projects, and the sum of the distinct number of words in their project. Name the columns sum and distinct_sum. Note that the results differ.
+
+```sql
+SELECT
+  SUM(words) as sum,
+  SUM(DISTINCT words) as distinct_sum
+FROM project
+WHERE client_id = 10
+```
+
+For each translator, show their first and last name, followed by:
+
+- the sum of the prices for all the projects they have completed (as sum).
+- the maximum price (as max).
+- the minimum price (as min).
+
+Make sure that all translators are shown, and if any of these values turns out to be NULL, show 0 instead.
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  COALESCE(SUM(price), 0) as sum,
+  COALESCE(MAX(price), 0) as max,
+  COALESCE(MIN(price), 0) as min
+FROM translator
+LEFT JOIN project
+  ON translator.translator_id = project.translator_id
+GROUP BY first_name, last_name
+```
+
+Count the number of all projects, the number of clients that have commissioned at least one project (that is, count them once even if they commissioned more than one project) and the average price for all the projects. Name the columns: projects_no, clients_no, and average_price.
+
+```sql
+SELECT
+  COUNT(*) as projects_no,
+  COUNT(DISTINCT client_id) as clients_no,
+  AVG(price) as average_price
+FROM project
+```
+
+For each translator, show:
+
+- their first and last name.
+- the number of projects they have completed (as projects_no).
+- the highest number of words among their projects (as max_words).
+- the average price among their projects rounded to integer values (as rounded_avg_price).
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  COUNT(project_id) as projects_no,
+  MAX(words) as max_words,
+  ROUND(AVG(price)) as rounded_avg_price
+FROM translator
+LEFT JOIN project
+  ON translator.translator_id = project.translator_id
+GROUP BY last_name, first_name
+```
+
+For each language combination in table project (e.g. EN to ES, ES to EN, DE to PL etc.) show lang_from, lang_to and the average price in this combination (as avg_price). When calculating the average, treat NULL values as 0.
+
+```sql
+SELECT
+  lang_from,
+  lang_to,
+  AVG(COALESCE(price, 0)) as avg_price
+FROM project
+GROUP BY lang_from, lang_to
+```
+
+Show each client's name together with the number of projects they have completed (name this column projects_no). Show only those clients who have commissioned more than 1 project.
+
+```sql
+SELECT
+  name,
+  COUNT(project_id) as projects_no
+FROM client
+JOIN project
+  ON client.client_id = project.client_id
+GROUP BY name
+HAVING COUNT(*) > 1
+```
+
+## CASE WHEN
+
+_candidate_
+
+| id  | first_name | last_name | score_math | score_language | preferred_contact |
+| ----| ---- | ---- | ---- | ---- | ---- |
+| 1 | Troy | Gray | 43 | 64 | mobile |
+| … | … | … | … | … | … |
+
+_course_
+
+| id  | name | place_limit | scholarship | graduate_satisfaction |
+| ----| ---- | ---- | ---- | ---- |
+| 1 | Viking Studies | 10 | f | 67 |
+| … | … | … | … | … |
+
+_application_
+
+| candidate_id  | course_id | fee | pay_date | status |
+| ----| ---- | ---- | ---- | ---- |
+| 5 | 1 | 50 | 2015-06-01 | accepted |
+| … | … | … | … | … |
+
+For each degree course, show its name and a second column based on the column place_limit:
+
+- If it's 5, write 'few places'.
+- if it's 10, write 'average number of places'.
+- If it's 15 – 'numerous places'.
+- If the result is something else, show 'other'.
+
+```sql
+SELECT
+  name,
+  CASE place_limit
+    WHEN 5 THEN 'few places'
+    WHEN 10 THEN 'average number of places'
+    WHEN 15 THEN 'numerous places'
+    ELSE 'other'
+  END
+FROM course
+```
+
+For each application, show the candidate ID (as candidate_id) and the course_id along with the following information: if the status is accepted, show 1. Otherwise, show 0. Name the last column accepted.
+
+```sql
+SELECT
+  candidate_id,
+  course_id,
+  CASE status
+    WHEN 'accepted' THEN 1
+    ELSE 0
+  END as accepted
+FROM application
+```
+
+For table candidate, show each candidate's id, preferred_contact and the third column which will print:
+
+- 'traditional' if the preferred_contact is 'mail'.
+- 'modern' if it's 'mobile' or 'e-mail'.
+- 'other' otherwise.
+
+```sql
+SELECT
+  id,
+  preferred_contact,
+  CASE preferred_contact
+    WHEN 'mail' THEN 'traditional'
+    WHEN 'mobile' THEN 'modern'
+    WHEN 'e-mail' THEN 'modern'
+    ELSE 'other'
+  END
+FROM candidate
+```
+
+Show the following columns: name of the course, first and last name of the candidate (first_name, last_name), and a column fee_information which shows:
+
+- 'high' when the fee is 50.
+- 'low' in any other case.
+
+Sort the rows by the name of the course in DESCending order.
+
+```sql
+SELECT
+  name,
+  first_name,
+  last_name,
+  CASE fee
+    WHEN 50 THEN 'high'
+    ELSE 'low'
+  END as fee_information
+FROM application
+JOIN course
+  ON application.course_id = course.id
+JOIN candidate
+  ON application.candidate_id = candidate.id
+ORDER BY name DESC
+```
+
+Let's make a similar query for language skills. For each candidate, show their first and last name (first_name, last_name) along with a third column language_skills with the following possibilities:
+
+- 'amazing linguist' (>80 language points).
+- 'can speak a bit' (>50 language points).
+- 'cannot speak a word' otherwise.
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  CASE
+    WHEN score_language > 80 THEN 'amazing linguist'
+    WHEN score_language > 50 THEN 'can speak a bit'
+    ELSE 'cannot speak a word'
+  END as language_skills
+FROM candidate
+```
+
+For each candidate, show the first_name and last_name and a third column called overall_result: if the sum of score_math and score_language is 150 or more, show 'excellent'. If it's between 100 and 149, show 'good'. Otherwise, show 'poor'.
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  CASE
+    WHEN score_math + score_language > 150 THEN 'excellent'
+    WHEN score_math + score_language > 100 THEN 'good'
+    ELSE 'poor'
+  END as overall_result
+FROM candidate
+```
+
+For each candidate, show the first_name and last_name along with the third column contact_info with the values:
+
+- 'provided' when the column preferred_contact is not NULL.
+- 'not provided' otherwise.
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  CASE
+    WHEN preferred_contact IS NOT NULL THEN 'provided'
+    ELSE 'not provided'
+  END as contact_info
+FROM candidate
+```
+
+Show each candidate's ID, score in math and a third column which will show:
+
+- 'above average' for candidates with math score higher than 60.
+- 'below average' for candidates with math score equal to or less than 60.
+- For other results, show 'not available'.
+
+The column names should be: id, score_math, and result. Note what happens to the rows with a NULL score.
+
+```sql
+SELECT
+  id,
+  score_math,
+  CASE
+    WHEN score_math > 60 THEN 'above average'
+    WHEN score_math <= 60 THEN 'below average'
+    ELSE 'not available'
+  END as result
+FROM candidate
+```
+
+The courses have different requirements, so let's check who can actually become a student of Ethical Hacking (id = 3). Show the name of this course, the first_name and last_name of the candidate who applied for this course, and another column called qualification. The rules are as follows:
+
+- If the student got above 80 in math, show 'qualified'.
+- If the score in math is above 70, but the score in language is above 50, show 'qualified' as well.
+- If the score in math is between 50 and 70, show 'possible'.
+- Otherwise, show 'rejected'.
+
+```sql
+SELECT
+  name,
+  first_name,
+  last_name,
+  CASE
+    WHEN score_math > 80 THEN 'qualified'
+    WHEN score_math > 70 AND score_language > 50 THEN 'qualified'
+    WHEN score_math BETWEEN 50 AND 70 THEN 'possible'
+    ELSE 'rejected'
+  END as qualification
+FROM application
+JOIN candidate
+  ON candidate.id = application.candidate_id
+JOIN course
+  ON application.course_id = course.id
+WHERE course_id = 3
+```
+
+Calculate the total sum from fees paid on June 3, 2015 (column june_3rd) and the total sum from fees paid on June 4, 2015 (column june_4th).
+
+```sql
+SELECT
+  SUM(CASE
+      WHEN pay_date = '2015-06-03' THEN fee
+      ELSE 0
+     END) as june_3rd,
+  SUM(CASE
+      WHEN pay_date = '2015-06-04' THEN fee
+      ELSE 0
+    END) as june_4th
+FROM application
+```
+
+Count the number of applications that have:
+
+- a full fee of 50 (full_fee_sum).
+- a fee of 10 (reduced_fee_sum).
+- a fee of 0 (free_sum).
+- a fee of NULL (null_fee_sum).
+
+```sql
+SELECT
+  SUM(CASE WHEN fee = 50 THEN 1 ELSE 0 END) as full_fee_sum,
+  SUM(CASE WHEN fee = 10 THEN 1 ELSE 0 END) as reduced_fee_sum,
+  SUM(CASE WHEN fee = 0 THEN 1 ELSE 0 END) as free_sum,
+  SUM(CASE WHEN fee IS NULL THEN 1 ELSE 0 END) as null_fee_sum
+FROM application
+```
+
+Count the number of candidates with preferred_contact set to:
+
+- 'mobile' (mobile_sum).
+- 'e-mail' (email_sum).
+- 'mail' (mail_sum).
+- with NULL (null_sum).
+
+Only count candidates whose score in math and score in language are both greater than or equal to 30.
+
+```sql
+SELECT
+  SUM(CASE WHEN preferred_contact = 'mobile' THEN 1 ELSE 0 END) as mobile_sum,
+  SUM(CASE WHEN preferred_contact = 'e-mail' THEN 1 ELSE 0 END) as email_sum,
+  SUM(CASE WHEN preferred_contact = 'mail' THEN 1 ELSE 0 END) as mail_sum,
+  SUM(CASE WHEN preferred_contact IS NULL THEN 1 ELSE 0 END) as null_sum
+FROM candidate
+WHERE score_math >= 30 AND score_language >= 30
+```
