@@ -934,7 +934,7 @@ FROM mountain
 _skating_
 
 | id | person | country | year | place |
-| ---- | ----| ---- | ---- |
+| ---- | ----| ---- | ---- | ---- |
 | 1 | Clara Hughes | Canada | 2006 | 1 |
 | … | … | … | … | … |
 
