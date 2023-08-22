@@ -78,4 +78,121 @@ WHERE type = 'dessert'
 
 ## Advanced features of INSERT, UPDATE, and DELETE
 
+_student_
+
+| id | first_name | middle_name | last_name |
+| ---- | ----| ---- | ---- |
+| 1 | Mark | Johan | Adams |
+| … | … | … | … |
+
+_exam_
+
+| column_name | sample value |
+| ---- | ----|
+| id | 1 |
+| student_id | 1 |
+| subject | Mathematics |
+| written_exam_date | 2017-03-20 |
+| written_exam_score | 21 |
+| written_score_date | 2017-03-30 |
+| oral_exam_date | 2017-03-25 |
+| oral_exam_score | 10 |
+| oral_score_date | 2017-03-25 |
+
+Add a new student with id = 11 to the student table. The teacher knows only his last name: Barry. 
+
+Don't use NULL when inserting this data.
+
+```sql
+INSERT INTO student (id, last_name)
+VALUES (11, 'Barry')
+```
+
+Add info about Tom Muller's written math exam to this table. You know only the exam ID (17), the student ID (12), Tom's score on the written exam (12), the date of the written exam (October 14, 2018), and when the exam was scored (October 16, 2018).
+
+```sql
+INSERT INTO exam (id, student_id, written_exam_score, written_exam_date, written_score_date)
+VALUES (17, 12, 12, '2018-10-14', '2018-10-16')
+```
+
+In the database, the teacher stores the student name Laura Donna Ross (id = 10). However, Laura doesn't have a middle name; Donna is a mistake. Correct this mistake by updating the data.
+
+```sql
+UPDATE student
+SET middle_name = NULL
+WHERE id = 10
+```
+
+Some students didn't receive any scores on a written exam—the teacher forgot to enter their scores. Correct this mistake by assigning all missing written exam values a score of 43.
+
+```sql
+UPDATE exam
+SET written_exam_score = 43
+WHERE written_exam_score IS NULL
+```
+
+A group of students weren't scored on an oral exam, so the exam was canceled. The results from this exam have to be removed. Write a query to remove these records.
+
+```sql
+DELETE FROM exam
+WHERE oral_exam_score IS NULL
+```
+
+Assign a score of 3 points to all students who do not have an oral English exam score date.
+
+```sql
+UPDATE exam
+SET oral_exam_score = 3
+WHERE oral_score_date IS NULL
+  AND subject = 'English'
+```
+
+Our university is not accredited to conduct exams in Spanish and Mathematics. Delete all records for these exams.
+
+```sql
+DELETE FROM exam
+WHERE subject = 'Spanish' OR subject = 'Mathematics'
+```
+
+The oral exams with no date assigned take place four days after the written_exam_date. Update the data.
+
+```sql
+UPDATE exam
+SET oral_exam_date = written_exam_date + INTERVAL '4' DAY
+WHERE oral_exam_date IS NULL
+```
+
+It's time to fix another mistake in our database. Somebody mistook the first name of the student whose ID is 6 for his last name. See if you can use the example query to correct this.
+
+```sql
+UPDATE student
+SET first_name = last_name, last_name = first_name
+WHERE id = 6
+```
+
+The university wants to have a list of all oral exams in which students got more than 20 points. They want it in a new table, report_good_oral_exams.
+
+Use the id, student_id, and subject columns from the exam table to put data into exam_id, student_id, and subject columns in the report_good_oral_exams table.
+
+```sql
+INSERT INTO report_good_oral_exams
+SELECT id, student_id, subject
+FROM exam
+WHERE oral_exam_score > 20
+```
+
+This time, the university needs a list of average results of written and oral exams in each subject (from the exam table).
+
+The new table, report_average_scores consists of the following columns: subject, avg_written_exam_score, and avg_oral_exam_score (which are of type DECIMAL(4,2)).
+
+Help the university insert data into the report_average_scores table.
+
+```sql
+INSERT INTO report_average_scores
+SELECT subject, AVG(written_exam_score), AVG(oral_exam_score)
+FROM exam
+GROUP BY subject
+```
+
+## Working with DEFAULT values
 
