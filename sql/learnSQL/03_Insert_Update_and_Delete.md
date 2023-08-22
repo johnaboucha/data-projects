@@ -196,3 +196,65 @@ GROUP BY subject
 
 ## Working with DEFAULT values
 
+_author_
+
+| column_name | sample value |
+| ---- | ----|
+| id | 1 |
+| first_name | Marian |
+| last_name | Kowalsky |
+| photo | imgs/MK.jpg |
+| create_timestamp | 2018-09-20 21:13:02.3 |
+| is_active | t |
+
+_post_
+
+| column_name | sample value |
+| ---- | ----|
+| id | 1 |
+| author_id | 10 |
+| title | Incredible history |
+| text | Archaeologists in Egypt… |
+| modified_timestamp | 2018-10-12 12:15:30.2 |
+
+Let's add the data for Cindy Barry into the author table. She should have an ID of 2, a photo path set to 'imgs/cindy.jpg', and a registration date of '2018-08-27'.
+
+We don't know if Cindy wants to have an active account yet, so we'll leave this as a DEFAULT value.
+
+```sql
+INSERT INTO author
+VALUES (2, 'Cindy', 'Barry', 'imgs/cindy.jpg', '2018-08-27', DEFAULT)
+```
+
+Martin Williams (id = 4) registered to join the site on 2018-09-30. Insert his data with default values for the photo and is_active columns.
+
+```sql
+INSERT INTO author
+VALUES (4, 'Martin', 'Williams', DEFAULT, '2018-09-30', DEFAULT)
+```
+
+The author with ID of 7 wrote his first short post:
+
+'Our company sold about 23 percent more magazines this year than it did 2 years ago.'
+
+The title is
+
+'Increased magazine sales'
+
+and the post ID is 5. Insert this data into the post table using the default date, which is the current date and time.
+
+
+```sql
+INSERT INTO post
+VALUES (5, 7, 'Increased magazine sales',
+  'Our company sold about 23 percent more magazines this year than it did 2 years ago.',
+  DEFAULT)
+```
+
+The author Alan Hillary (id = 3) would like to set the is_active value to the default and change the path for his photo to imgs/alan3.jpg.
+
+```sql
+UPDATE author
+SET is_active = DEFAULT, photo = 'imgs/alan3.jpg'
+WHERE id = 3
+```
