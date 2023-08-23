@@ -10,4 +10,4 @@ Structured Query Language (SQL) is a fun programming language for storing, proce
 
 Coursework complete:
 
-1. [SQL Basics](/learnSQL/01_SQL_Basics.md)
+1. [SQL Basics](/sql/learnSQL/01_SQL_Basics.md)
