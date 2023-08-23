@@ -12,6 +12,6 @@ Coursework complete:
 
 1. [SQL Basics](/sql/learnSQL/01_SQL_Basics.md)
 1. Standard SQL Functions
-  1. [Part 1](/sql/learnSQL/02_Standard_SQL_Functions_part_1.md)
-  1. [Part 2](/sql/learnSQL/02_Standard_SQL_Functions_part_2.md)
+    1. [Part 1](/sql/learnSQL/02_Standard_SQL_Functions_part_1.md)
+    1. [Part 2](/sql/learnSQL/02_Standard_SQL_Functions_part_2.md)
 1. [Insert, Update, and Delete](/sql/learnSQL/03_Insert_Update_and_Delete.md)
