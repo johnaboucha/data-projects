@@ -1,6 +1,6 @@
 # Creating Basic SQL Reports part 1
 
-Database used is Microsoft’s Northwind dataset, a fictional store and its customers, suppliers, and orders. Find it on [GitHub](https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs).
+Database used is based on Microsoft’s Northwind dataset, a fictional store and its customers, suppliers, and orders. Find it on [GitHub](https://github.com/Microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs).
 
 Select each customer's ID, company name, contact name, contact title, city, and country. Order the results by the name of the country.
 
@@ -133,4 +133,51 @@ FROM employees
 JOIN orders
   on employees.employee_id = orders.employee_id
 GROUP BY employees.employee_id, first_name, last_name
+```
+
+How much are the products in stock in each category worth? Show three columns: category_id, category_name, and category_total_value. You'll calculate the third column as the sum of unit prices multiplied by the number of units in stock for all products in the given category.
+
+```sql
+SELECT
+  categories.category_id,
+  category_name,
+  SUM(unit_price * units_in_stock) as category_total_value
+FROM categories
+JOIN products
+  ON categories.category_id = products.category_id
+GROUP BY categories.category_id, category_name
+```
+
+Count the number of orders placed by each customer. Show the customer_id, company_name, and orders_count columns.
+
+```sql
+SELECT
+  customers.customer_id,
+  company_name,
+  COUNT(order_id) as orders_count
+FROM customers
+JOIN orders
+  ON customers.customer_id = orders.customer_id
+GROUP BY customers.customer_id, company_name
+```
+
+Which customers paid the most for orders made in June 2016 or July 2016? Show two columns:
+
+1. company_name
+1. total_paid, calculated as the total price (after discount) paid for all orders made by a given customer in June 2016 or July 2016.
+
+Sort the results by total_paid in descending order.
+
+```sql
+SELECT
+  company_name,
+  SUM(unit_price * quantity * (1 - discount)) as total_paid
+FROM customers
+JOIN orders
+  ON customers.customer_id = orders.customer_id
+JOIN order_items
+  ON orders.order_id = order_items.order_id
+WHERE order_date BETWEEN '2016-06-01' AND '2016-07-31'
+GROUP BY company_name
+ORDER BY total_paid DESC
 ```
