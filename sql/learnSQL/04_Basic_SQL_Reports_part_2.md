@@ -193,3 +193,57 @@ SELECT
 FROM italy_orders, avg_order
 WHERE order_value > avg_order_value
 ```
+
+What's the average number of orders that were processed by a single employee and shipped to the USA or Canada? Show the answer in a column named avg_order_count.
+
+```sql
+WITH orders as (SELECT
+  employee_id,
+  COUNT(order_id) as order_count
+FROM orders
+WHERE ship_country IN ('USA', 'Canada')
+GROUP BY employee_id)
+
+SELECT
+  AVG(order_count) as avg_order_count
+FROM orders
+```
+
+Find the average order value (after discount) for each customer. Show the customer_id and avg_discounted_price columns.
+
+```sql
+WITH customer_orders as (
+SELECT
+  orders.order_id,
+  customer_id,
+  SUM(unit_price * quantity * (1-discount)) as order_value
+FROM order_items
+JOIN orders
+  ON orders.order_id = order_items.order_id
+GROUP BY orders.order_id, customer_id
+)
+  
+SELECT
+  customer_id,
+  AVG(order_value) as avg_discounted_price
+FROM customer_orders
+GROUP BY customer_id
+```
+
+We want to see if cheaper products are currently being ordered in larger quantities.
+
+Create a report with two columns: price_category (which will contain either 'cheap' for products with a maximum unit_price of 20.0 or 'expensive' otherwise) and avg_products_on_order (the average number of units on order for a given price category).
+
+```sql
+SELECT
+  CASE
+    WHEN unit_price <= 20.0 THEN 'cheap'
+    ELSE 'expensive'
+  END as price_category,
+  AVG(units_on_order) as avg_products_on_order
+FROM products
+GROUP BY CASE
+  WHEN unit_price <= 20.0 THEN 'cheap'
+  ELSE 'expensive'
+END
+```
