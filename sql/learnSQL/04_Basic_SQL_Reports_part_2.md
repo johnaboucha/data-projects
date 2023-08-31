@@ -247,3 +247,203 @@ GROUP BY CASE
   ELSE 'expensive'
 END
 ```
+
+## Multiple Metrics in One Report
+
+We want to see each customer's ID alongside the number of orders they placed and the total revenue (after discount) that their purchases generated generated for us. Show three columns:
+
+- The customer's ID (customer_id).
+- The number of orders (as order_count).
+- The total price paid for all orders after discounts (as total_revenue_after_discount).
+
+```sql
+SELECT
+  customer_id,
+  COUNT(DISTINCT orders.order_id) as order_count,
+  SUM(unit_price * quantity * (1 - discount)) as total_revenue_after_discount
+FROM orders
+JOIN order_items
+ON orders.order_id = order_items.order_id
+GROUP BY customer_id
+```
+
+For each employee, determine their performance for 2016: Compute the total number and the total revenue for orders processed by each employee. Show the employee's first name (first_name), last name (last_name), and the two metrics in columns named order_count (total number of orders processed by the employee) and order_revenue (total revenue for orders processed by the employee).
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  COUNT(DISTINCT orders.order_id) as order_count,
+  SUM(unit_price * quantity * (1 - discount)) as order_revenue
+FROM employees
+LEFT JOIN orders
+  ON orders.employee_id = employees.employee_id
+LEFT JOIN order_items
+  ON orders.order_id = order_items.order_id
+WHERE order_date BETWEEN '2016-01-01' AND '2016-12-31'
+GROUP BY employees.employee_id, first_name, last_name
+```
+
+For each category, show the number of products in stock (i.e., products where units_in_stock > 0) and the number of products not in stock. The report should contain three columns:
+
+- category_name
+- products_in_stock
+- products_not_in_stock
+
+```sql
+SELECT
+  category_name,
+  COUNT(CASE
+    WHEN units_in_stock > 0 THEN 1 END) as products_in_stock,
+  COUNT(CASE
+    WHEN units_in_stock = 0 THEN 1 END) as products_not_in_stock
+FROM products
+JOIN categories
+  ON categories.category_id = products.category_id
+GROUP BY category_name
+```
+
+For each order, determine how many line items (unique products) were discounted and how many weren't. Show three columns:
+
+- The order ID (order_id).
+- The number of line items that were not discounted (as full_price_product_count).
+- The number of line items that were discounted (as discount_product_count)
+
+```sql
+SELECT
+  order_id,
+  COUNT(CASE
+    WHEN discount = 0.00 THEN 1 END) as full_price_product_count,
+  COUNT(CASE
+    WHEN discount > 0.00 THEN 1 END) as discount_product_count
+FROM order_items
+GROUP BY order_id
+```
+
+We want to find the ratio of the revenue from all discounted items to the total revenue from all items. We'll do this in steps too.
+
+First, show two columns:
+
+1. discounted_revenue – the revenue (after discount) from all discounted line items in all orders.
+1. total_revenue – the total revenue (after discount) from line items in all orders.
+
+```sql
+SELECT
+  SUM(CASE
+    WHEN discount != 0.00 THEN unit_price * quantity * (1 - discount)
+    END) as discounted_revenue,
+  SUM(unit_price * quantity * (1 - discount)) as total_revenue
+FROM order_items
+```
+
+Add a third column to the previous example: discounted_ratio. It should contain the ratio of discounted line items (from column 1) to all line items (from column 2).
+
+```sql
+WITH order_sums as (SELECT
+  SUM(CASE
+    WHEN discount > 0
+      THEN unit_price * quantity * (1 - discount)
+  END) AS discounted_revenue,
+  SUM(unit_price * quantity * (1 - discount)) AS total_revenue
+FROM order_items)
+
+SELECT
+  discounted_revenue,
+  total_revenue,
+  discounted_revenue / CAST(total_revenue as decimal) as discounted_ratio
+FROM order_sums
+```
+
+What is the percentage of discontinued items at Northwind? Show three columns: count_discontinued, count_all, and percentage_discontinued. Round the last column to two decimal places.
+
+```sql
+WITH order_counts as (SELECT
+  COUNT(CASE
+    WHEN discontinued = 't' THEN 1 END) as count_discontinued,
+  COUNT(product_id) as count_all
+FROM products)
+
+SELECT
+  count_discontinued,
+  count_all,
+  ROUND(count_discontinued / CAST(count_all as decimal)*100, 2) as percentage_discontinued
+FROM order_counts
+```
+
+For each employee, find the percentage of all orders they processed that were placed by customers in France. Show five columns: first_name, last_name, count_france, count_all, and percentage_france (rounded to one decimal point).
+
+```sql
+SELECT
+  first_name,
+  last_name,
+  COUNT(CASE
+       WHEN ship_country = 'France' THEN order_id END) as count_france,
+  COUNT(order_id) as count_all,
+  ROUND(COUNT(CASE
+       WHEN customers.country = 'France' THEN order_id END) / 
+       CAST(COUNT(order_id) as decimal) * 100, 1) as percentage_france
+FROM employees
+LEFT JOIN orders
+  ON employees.employee_id = orders.employee_id
+LEFT JOIN customers
+  ON customers.customer_id = orders.customer_id
+GROUP BY employees.employee_id, first_name, last_name
+```
+
+We want to see each employee alongside the number of orders they processed in 2017 and the percentage of all orders from 2017 that they generated. Show the following columns:
+
+1. employee_id.
+1. first_name.
+1. last_name.
+1. order_count – the number of orders processed by that employee in 2017.
+1. order_count_percentage – the percentage of orders from 2017 processed by that employee.
+
+Round the value of the last column to two decimal places.
+
+```sql
+WITH total_orders as (SELECT
+  COUNT(order_id) as total_sales
+FROM orders
+WHERE order_date BETWEEN '2017-01-01' AND '2017-12-31')
+
+SELECT
+  employees.employee_id,
+  first_name,
+  last_name,
+  COUNT(order_id) as order_count,
+  ROUND(COUNT(order_id) / CAST(total_sales as decimal)*100,2) as order_count_percentage
+FROM total_orders, employees
+JOIN orders
+  ON employees.employee_id = orders.employee_id
+WHERE order_date BETWEEN '2017-01-01' AND '2017-12-31'
+GROUP BY employees.employee_id, first_name, last_name, total_orders.total_sales
+```
+
+For each country, find the percentage of revenue generated by orders shipped to it in 2018. Show three columns:
+
+1. ship_country.
+1. revenue – the total revenue generated by all orders shipped to that country in 2018.
+1. revenue_percentage – the percentage of that year's revenue generated by orders shipped to that country in 2018.
+
+Round the percentage to two decimal places. Consider revenue without discount. Order the results in descending order by the revenue column.
+
+```sql
+WITH totals as (SELECT
+  SUM(unit_price * quantity) as total_revenue
+FROM order_items
+JOIN orders
+  ON order_items.order_id = orders.order_id
+WHERE shipped_date BETWEEN '2018-01-01' AND '2018-12-31'
+)
+SELECT
+  ship_country,
+  SUM(unit_price * quantity) as revenue,
+  ROUND(SUM(unit_price * quantity)
+  / CAST(total_revenue as decimal) * 100,2) as revenue_percentage
+FROM totals, orders
+JOIN order_items
+  ON orders.order_id = order_items.order_id
+WHERE shipped_date BETWEEN '2018-01-01' AND '2018-12-31'
+GROUP BY ship_country, total_revenue
+ORDER BY revenue DESC
+```
