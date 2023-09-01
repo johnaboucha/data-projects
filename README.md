@@ -47,6 +47,6 @@ Dashboard created with data collected from [kaggle.com](https://www.kaggle.com/d
 projects/pga/PGA Tour Dashboard.xlsx
 ```
 
-![PGA Dashboard](projects/pga/dashboard.png)
+![PGA Dashboard](/excel/projects/pga/dashboard.png)
  
 A place to post [Tableau](/tableau), [SQL](/sql), and [Excel](/excel) projects.
