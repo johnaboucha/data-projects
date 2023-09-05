@@ -168,3 +168,121 @@ JOIN department
 
 ## OVER(Partition By)
 
+_train_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| model | InterCity 100 |
+| max_speed | 160 |
+| production_year | 2000 |
+| first_class_places | 30 |
+| second_class_places | 230 |
+
+_route_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| name | Manchester Express |
+| from_city | Sheffield |
+| to_city | Manchester |
+| distance | 30 |
+
+_journey_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| train_id | 1 |
+| route_id | 1 |
+| date | 2016-01-03 |
+
+_journey_id_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| price | 100 |
+| class | 1 |
+| journey_id | 23 |
+
+Show the id of each journey, its date and the number of journeys that took place on that date.
+
+```sql
+SELECT
+  id,
+  date,
+  COUNT(id) OVER(PARTITION BY date)
+FROM journey
+```
+
+Show id, model, first_class_places, second_class_places, and the number of trains of each model with more than 30 first class places and more than 180 second class places.
+
+```sql
+SELECT
+  id,
+  model,
+  first_class_places,
+  second_class_places,
+  COUNT(id) OVER(PARTITION BY model)
+FROM train
+WHERE first_class_places > 30 AND second_class_places > 180
+```
+
+Show the id of each journey, the date on which it took place, the model of the train that was used, the max_speed of that train and the highest max_speed from all the trains that ever went on the same route on the same day.
+
+```sql
+SELECT
+  journey.id,
+  date,
+  model,
+  max_speed,
+  MAX(max_speed) OVER(PARTITION BY route_id, date)
+FROM journey
+JOIN train
+  ON journey.train_id = train.id
+```
+
+For each journey, show its id, the production_year of the train on that journey, the number of journeys the train took and the number of journeys on the same route.
+
+```sql
+SELECT
+  journey.id,
+  production_year,
+  COUNT(journey.id) OVER(),
+  COUNT(journey.id) OVER(PARTITION BY route_id)
+FROM journey
+JOIN route
+  ON journey.route_id = route.id
+JOIN train
+  ON journey.train_id = train.id
+```
+
+For each ticket, show its id, price, date of its journey, the average price of tickets sold on that day and the number of tickets sold on that day. Exclude journeys with train_id = 5.
+
+```sql
+SELECT
+  ticket.id,
+  price,
+  date,
+  AVG(price) OVER(PARTITION BY date),
+  COUNT(ticket.id) OVER(PARTITION BY date)
+FROM ticket
+JOIN journey
+  ON ticket.journey_id = journey.id
+WHERE train_id != 5
+```
+
+For each ticket, show its id, price and, the column named ratio. The ratio is the ticket price to the sum of all ticket prices purchased on the same journey.
+
+```sql
+SELECT
+  id,
+  price,
+  price / CAST(SUM(price) OVER(PARTITION BY journey_id) as decimal) as ratio
+FROM ticket
+```
+
+## Ranking Functions
+
