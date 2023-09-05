@@ -286,3 +286,182 @@ FROM ticket
 
 ## Ranking Functions
 
+_game_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| name | Go Bunny |
+| platform | iOS |
+| genre | action |
+| editor_rating | 5 |
+| size | 101 |
+| released | 2015-05-01 |
+| updated | 2015-07-13 |
+
+_purchase_
+
+| column name | example value |
+| ---- | ---- |
+| id | 1 |
+| game_id | 7 |
+| price | 15.99 |
+| date | 2016-03-07 |
+
+For each game, show name, genre, date of update and its rank. The rank should be created with RANK() and take into account the date of update.
+
+```sql
+SELECT
+  name,
+  genre,
+  updated,
+  RANK() OVER(ORDER BY updated)
+FROM game
+```
+
+Use DENSE_RANK() and for each game, show name, size and the rank in terms of its size.
+
+```sql
+SELECT
+  name,
+  size,
+  DENSE_RANK() OVER(ORDER BY size)
+FROM game
+```
+
+Use ROW_NUMBER() and for each game, show their name, date of release and the rank based on the date of release.
+
+```sql
+SELECT
+  name,
+  released,
+  ROW_NUMBER() OVER(ORDER BY released)
+FROM game
+```
+
+For each game, show its name, genre and date of release. In the next three columns, show RANK(), DENSE_RANK() and ROW_NUMBER() sorted by the date of release.
+
+```sql
+SELECT
+  name,
+  genre,
+  released,
+  RANK() OVER(ORDER BY released),
+  DENSE_RANK() OVER(ORDER BY released),
+  ROW_NUMBER() OVER(ORDER BY released)
+FROM game
+```
+
+Let's use DENSE_RANK() to show the latest games from our studio. For each game, show its name, genre, date of release and DENSE_RANK() in the descending order.
+
+```sql
+SELECT
+  name,
+  genre,
+  released,
+  DENSE_RANK() OVER(ORDER BY released DESC)
+FROM game
+```
+
+We want to find games which were both recently released and recently updated. For each game, show name, date of release and last update date, as well as their rank: use ROW_NUMBER(), sort by release date and then by update date, both in the descending order.
+
+```sql
+SELECT
+  name,
+  released,
+  updated,
+  ROW_NUMBER() OVER(ORDER BY released DESC, updated DESC)
+FROM game
+```
+
+For each game find its name, genre, its rank by size. Order the games by date of release with newest games coming first.
+
+```sql
+SELECT
+  name,
+  genre,
+  RANK() OVER(ORDER BY size)
+FROM game
+ORDER BY released DESC
+```
+
+For each purchase, find the name of the game, the price, and the date of the purchase. Give purchases consecutive numbers by date when the purchase happened, so that the latest purchase gets number 1. Order the result by editor's rating of the game.
+
+```sql
+SELECT
+  name,
+  price,
+  date,
+  ROW_NUMBER() OVER(ORDER BY date DESC)
+FROM purchase
+JOIN game
+  ON purchase.game_id = game.id
+ORDER BY editor_rating
+```
+
+We want to divide games into 4 groups with regard to their size, with biggest games coming first. For each game, show its name, genre, size and the group it belongs to.
+
+```sql
+SELECT
+  name,
+  genre,
+  size,
+  NTILE(4) OVER(ORDER BY size DESC)
+FROM game
+```
+
+Split the games into 5 groups based on their date of last update. The most recently updated games should come first. For each of them, show the name, genre, date of update and the group they were assigned to. In the result, notice how many items the groups have (varying value).
+
+```sql
+SELECT
+  name,
+  genre,
+  updated,
+  NTILE(5) OVER(ORDER BY updated DESC)
+FROM game
+```
+
+Find the name, genre and size of the smallest game in our studio.
+
+Remember the steps:
+
+1. Create the ranking query so that the smallest game gets rank 1.
+1. Use WITH to select rows with rank 1.
+
+```sql
+WITH ranking AS (
+SELECT
+  name,
+  genre,
+  size,
+  RANK() OVER(ORDER BY size) as rank_size
+FROM game
+)
+
+SELECT
+  name,
+  genre,
+  size
+FROM ranking
+WHERE rank_size = 1
+```
+
+Show the name, platform and update date of the second most recently updated game.
+
+```sql
+WITH ranking as (
+  SELECT
+  name,
+  platform,
+  updated,
+  RANK() OVER(ORDER BY updated DESC) updated_rank
+FROM game
+  )
+  
+SELECT
+  name,
+  platform,
+  updated
+FROM ranking
+WHERE updated_rank = 2
+```
